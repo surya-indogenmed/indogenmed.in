@@ -59,7 +59,7 @@
             $order_currency = $row['currency_code'];
            
         }
-    }
+    
 ?>
 <html>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -277,17 +277,42 @@
                                 </div>
                             </div>
 
-                        <!--    <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">-->
-                        <!--        <div class="form-check">-->
+
+                            <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
+                                <div class="form-check">
+                                   
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
+                                    <div class="title"> Pay By Payment Link</div>
+                                    <div class="sub-title">Secure transfer using your bank account</div>
+                                </div>
+                                <div class="d-flex">
+                                   <img src="img/stripe.png" height="40" width="100">
+                                </div>
+                            </div>
+                            
+                            <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
+                               <div class="form-check">
                                 	
-                        <!--        	<input class="form-check-input" type="radio" name="flexRadioDefault" id="paypal">-->
-                        <!--        	 <div class="title">PayPal</div>-->
-                        <!--        	<div class="sub-title">Secure online payment through the PayPal portal</div>-->
-                        <!--        </div>-->
-                        <!--        <div>-->
-    	                   <!--        <img src="img/paypal.png">-->
-                    	   <!-- 	</div>-->
-                    	   <!--</div>-->
+                               	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="wise">
+                               	    <div class="title">Wise</div>
+                                	<div class="sub-title">Secure online payment through the PayPal portal</div>
+                                </div>
+                                <div>
+    	                            <img src="img/wise.svg">
+                    	   	    </div>
+                    	    </div>
+
+                            <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
+                               <div class="form-check">
+                                	
+                               	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="paypal">
+                               	    <div class="title">PayPal</div>
+                                	<div class="sub-title">Secure online payment through the PayPal portal</div>
+                                </div>
+                                <div>
+    	                            <img src="img/paypal.png">
+                    	   	    </div>
+                    	    </div>
 
 	                        <label class="payment-list "  for="banktransfer" onclick="banktransfer('<?php echo $decoded_order_id ?>')">
 	                            
@@ -720,6 +745,15 @@
                     
                     window.location = domain_link + "pp/main.php?order_id="+orderid;
                 }
+                function wise(orderid) {
+                        
+                    window.location = domain_link + "wise/index.php?order_id="+orderid;
+                }
+
+                function stripe_payment_link(orderid) {
+                        
+                    window.location =  domain_link + "st/invoice.php?order_id="+orderid;
+                }
                 function stripe(orderid) {
                     
                     window.location =  domain_link + "st/main.php?order_id="+orderid;
@@ -754,3 +788,6 @@
             </script>
         </body>
 </html>
+<?php } else { ?>
+    <div>Invalid Request !!</div>
+<?php } ?>

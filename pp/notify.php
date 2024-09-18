@@ -1,5 +1,6 @@
 <?php
-require_once('config.php');
+require '../env.php';
+
 /*
 Read POST data
 reading posted data directly from $_POST causes serialization
@@ -134,40 +135,10 @@ if (strcmp($res, "VERIFIED") == 0 || strcasecmp($res, "VERIFIED") == 0) {
     $order_id = $getorderid[1];
     
     if($order_id > 0 ) {
-        $sql = "UPDATE `wp_posts` SET `post_status` = 'wc-processing' WHERE `wp_posts`.`ID` = '" . $order_id . "'";
+        $sql = "UPDATE `order` SET `order_status_id` = '15' WHERE `order_id` = '" . $order_id . "'";
         $result = $conn->query($sql);
     }  
-// 	$db = new DB;
-// 	$db->query("SELECT * FROM `payment_info` WHERE txn_id=:txn_id");
-// 	$db->bind(':txn_id', $txn_id);
-// 	$db->execute();
-// 	$unique_txn_id = $db->rowCount();
 
-// 	if(!empty($unique_txn_id)) {
-// 		error_log(date('[Y-m-d H:i e] '). 
-// 			"Invalid Transaction ID: $req" . PHP_EOL, 3, IPN_LOG_FILE);
-// 		$db->close();
-// 		exit();
-// 	}else{
-// 		$db->query("INSERT INTO `payment_info`
-// 			(`item_number`, `item_name`, `payment_status`,
-// 				 `amount`, `currency`, `txn_id`)
-// 			VALUES
-// 			(:item_number, :item_name, :payment_status, 
-// 				:amount, :currency, :txn_id)");
-// 		$db->bind(":item_number", $item_number);
-// 		$db->bind(":item_name", $item_name);
-// 		$db->bind(":payment_status", $payment_status);
-// 		$db->bind(":amount", $amount);
-// 		$db->bind(":currency", $currency);
-// 		$db->bind(":txn_id", $txn_id);
-// 		$db->execute();
-// 		/* error_log(date('[Y-m-d H:i e] '). 
-// 		"Verified IPN: $req ". PHP_EOL, 3, IPN_LOG_FILE);
-// 		*/
-// 	} 
-// 	$db->close();
-	
 } else if (strcmp($res, "INVALID") == 0) {
 	//Log invalid IPN messages for investigation
 	error_log(date('[Y-m-d H:i e] '). 
