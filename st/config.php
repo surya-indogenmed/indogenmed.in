@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 
 require '../env.php';
 
@@ -96,6 +96,23 @@ if ($result->num_rows > 0) {
     define('CURRENCY', $order_currency);
     define('EMAIL', $billing_email);
     
+    $sql1 = "SELECT * FROM oc_order_product WHERE order_id = " . $order_id;
+    $result1 = $conn->query($sql1);
+    $op = array();
+
+    if ($result1->num_rows > 0) {
+        
+      while($row1 = $result1->fetch_assoc()) {
+        
+        $op[] = [
+          'p_name' => $row1['name'],
+          'p_qty' => $row1['quantity'],
+          'p_price' => round($row1['total'])
+        ];
+
+      }
+    }
+    define('ORDER_PRODUCT', $op);
 
 } else {
   echo "Please try again!!!";
