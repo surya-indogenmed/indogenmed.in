@@ -1,0 +1,208 @@
+@font-face {
+	font-weight: normal;
+	font-style: normal;
+	font-family: "woodmart-font";
+	src: url("//www.website4test.com/indogenmed/wp-content/themes/woodmart/fonts/woodmart-font-3-400.woff2?v=7.5.2") format("woff2");
+}
+
+:root {
+	--wd-text-font: "Cabin", Arial, Helvetica, sans-serif;
+	--wd-text-font-weight: 400;
+	--wd-text-color: #777777;
+	--wd-text-font-size: 16px;
+	--wd-title-font: "Geologica", Arial, Helvetica, sans-serif;
+	--wd-title-font-weight: 500;
+	--wd-title-color: #242424;
+	--wd-entities-title-font: "Geologica", Arial, Helvetica, sans-serif;
+	--wd-entities-title-font-weight: 500;
+	--wd-entities-title-color: #333333;
+	--wd-entities-title-color-hover: rgb(51 51 51 / 65%);
+	--wd-alternative-font: "Lato", Arial, Helvetica, sans-serif;
+	--wd-widget-title-font: "Geologica", Arial, Helvetica, sans-serif;
+	--wd-widget-title-font-weight: 500;
+	--wd-widget-title-transform: none;
+	--wd-widget-title-color: #333;
+	--wd-widget-title-font-size: 16px;
+	--wd-header-el-font: "Geologica", Arial, Helvetica, sans-serif;
+	--wd-header-el-font-weight: 500;
+	--wd-header-el-transform: capitalize;
+	--wd-header-el-font-size: 14px;
+	--wd-brd-radius: 16px;
+	--wd-primary-color: rgb(135,188,64);
+	--wd-alternative-color: #fbbc34;
+	--wd-link-color: rgb(135,188,64);
+	--wd-link-color-hover: rgb(124,157,139);
+	--btn-default-bgcolor: rgb(51,51,51);
+	--btn-default-bgcolor-hover: rgb(36,36,36);
+	--btn-accented-bgcolor: rgb(136,173,153);
+	--btn-accented-bgcolor-hover: rgb(124,157,139);
+	--btn-font-family: "Geologica", Arial, Helvetica, sans-serif;
+	--btn-font-weight: 500;
+	--btn-transform: capitalize;
+	--wd-form-brd-width: 1px;
+	--notices-success-bg: rgb(136,173,153);
+	--notices-success-color: #fff;
+	--notices-warning-bg: #E0B252;
+	--notices-warning-color: #fff;
+}
+:is(.shop-content-area.wd-builder-off,.wd-wishlist-content,.related-and-upsells,.cart-collaterals,.wd-shop-product,.wd-fbt) .wd-products-with-bg, :is(.shop-content-area.wd-builder-off,.wd-wishlist-content,.related-and-upsells,.cart-collaterals,.wd-shop-product,.wd-fbt) .wd-products-with-bg .wd-product {
+	--wd-prod-bg:rgb(247,247,247);
+	--wd-bordered-bg:rgb(247,247,247);
+}
+.woodmart-woocommerce-layered-nav .wd-scroll-content {
+	max-height: 223px;
+}
+.wd-popup.wd-age-verify {
+	--wd-popup-width: 500px;
+}
+.wd-popup.wd-promo-popup {
+	background-color: #111111;
+	background-image: none;
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: left center;
+	--wd-popup-width: 800px;
+}
+.page-title-default {
+	background-color: rgb(247,247,247);
+	background-image: none;
+	background-size: cover;
+	background-position: center center;
+}
+.footer-container {
+	background-color: rgb(15,15,15);
+	background-image: none;
+}
+html .page-title > .container > .title {
+	font-size: 28px;
+}
+html table th {
+	text-transform: none;
+}
+.wd-checkout-steps li {
+	text-transform: none;
+}
+html .wd-nav-mobile > li > a, html .wd-nav-mobile .wd-sub-menu li a {
+	text-transform: capitalize;
+}
+.woodmart-archive-blog .main-page-wrapper {
+	background-color: rgb(247,247,247);
+	background-image: none;
+}
+html .wd-buy-now-btn {
+	color: rgb(255,255,255);
+	background: rgb(51,51,51);
+}
+html .wd-buy-now-btn:hover {
+	color: rgb(255,255,255);
+	background: rgb(36,36,36);
+}
+body, [class*=color-scheme-light], [class*=color-scheme-dark], .wd-search-form[class*="wd-header-search-form"] form.searchform, .wd-el-search .searchform {
+	--wd-form-bg: rgb(255,255,255);
+}
+.wd-nav-arrows.wd-pos-sep:not(:where(.wd-custom-style)) {
+	--wd-arrow-size: 44px;
+	--wd-arrow-icon-size: 16px;
+	--wd-arrow-offset-h: 15px;
+	--wd-arrow-color-hover: rgb(255,255,255);
+	--wd-arrow-bg: rgb(247,247,247);
+	--wd-arrow-bg-hover: rgb(136,173,153);
+	--wd-arrow-bg-dis: rgb(247,247,247);
+	--wd-arrow-radius: 20px;
+}
+.wd-nav-arrows.wd-pos-together:not(:where(.wd-custom-style)) {
+	--wd-arrow-gap: 20px;
+	--wd-arrow-size: 50px;
+	--wd-arrow-icon-size: 20px;
+	--wd-arrow-offset-h: 0px;
+	--wd-arrow-offset-v: 15px;
+	--wd-arrow-bg: rgb(247,247,247);
+	--wd-arrow-bg-hover: rgb(136,173,153);
+	--wd-arrow-bg-dis: rgb(247,247,247);
+	--wd-arrow-radius: 25px;
+}
+.wd-nav-scroll {
+	--wd-nscroll-width: 45%;
+	--wd-nscroll-drag-bg: rgb(136,173,153);
+	--wd-nscroll-drag-bg-hover: rgba(136,173,153,0.8);
+}
+.product-labels .product-label.onsale {
+	background-color: rgb(255,255,255);
+	color: rgb(51,51,51);
+}
+.product-labels .product-label.new {
+	background-color: rgb(255,255,255);
+	color: rgb(51,51,51);
+}
+.product-labels .product-label.featured {
+	background-color: rgb(255,255,255);
+	color: rgb(51,51,51);
+}
+.product-labels .product-label.out-of-stock {
+	background-color: rgb(255,255,255);
+	color: rgb(51,51,51);
+}
+.wd-popup.popup-quick-view {
+	--wd-popup-width: 920px;
+}
+
+@media (max-width: 1024px) {
+	html .page-title > .container > .title {
+		font-size: 24px;
+	}
+	.wd-nav-arrows.wd-pos-sep:not(:where(.wd-custom-style)) {
+		--wd-arrow-offset-h: -50px;
+	}
+	[class*="thumbs-grid-bottom"] .woocommerce-product-gallery__wrapper.wd-grid {
+		--wd-col: 1;
+	}
+
+}
+
+@media (max-width: 768.98px) {
+	.wd-nav-arrows.wd-pos-sep:not(:where(.wd-custom-style)) {
+		--wd-arrow-offset-h: 60px;
+	}
+	[class*="thumbs-grid-bottom"] .woocommerce-product-gallery__wrapper.wd-grid {
+		--wd-col: 1;
+	}
+
+}
+:root{
+--wd-container-w: 1720px;
+--wd-form-brd-radius: 35px;
+--btn-default-color: #fff;
+--btn-default-color-hover: #fff;
+--btn-accented-color: #fff;
+--btn-accented-color-hover: #fff;
+--btn-default-brd-radius: 35px;
+--btn-default-box-shadow: none;
+--btn-default-box-shadow-hover: none;
+--btn-accented-brd-radius: 35px;
+--btn-accented-box-shadow: none;
+--btn-accented-box-shadow-hover: none;
+}
+
+@media (min-width: 1737px) {
+.platform-Windows .wd-section-stretch > .elementor-container {
+margin-left: auto;
+margin-right: auto;
+}
+}
+
+@media (min-width: 1720px) {
+html:not(.platform-Windows) .wd-section-stretch > .elementor-container {
+margin-left: auto;
+margin-right: auto;
+}
+}
+
+
+@font-face {
+	font-family: "Geologica";
+	src: url("//www.website4test.com/indogenmed/wp-content/uploads/2024/03/Geologica_Auto-Medium.woff2") format("woff2"), 
+url("//www.website4test.com/indogenmed/wp-content/uploads/2024/03/Geologica_Auto-Medium.woff") format("woff");
+	font-weight: 500;
+	font-style: normal;
+}
+
