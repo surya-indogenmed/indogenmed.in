@@ -14,11 +14,11 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
 } else {
    
     define('DB_HOST', 'localhost'); 
-    define('DB_NAME', 'u341032289_indo_figmanet'); 
-    define('DB_USERNAME', 'u341032289_indo_figmanet'); 
-    define('DB_PASSWORD', 'indo_Figmanet@123#'); 
-    define('DOMAIN_LINK', 'https://indogenmed.in/'); 
-    define('MAIN_DOMAIN_LINK', 'https://indogenmed.org/'); 
+    define('DB_NAME', 'testdb_new'); 
+    define('DB_USERNAME', 'testdb'); 
+    define('DB_PASSWORD', 'Suryaindogen@#123'); 
+    define('DOMAIN_LINK', 'https://test.indogenmed.in/'); 
+    define('MAIN_DOMAIN_LINK', 'https://test.indogenmed.org/'); 
     // Test account stripe
     define("STRIPE_SECRET_API_KEY", "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");
     define("STRIPE_PUBLISHABLE_KEY", "pk_live_51LMwZcSGy15lQVN71VPcBLI8V7UFVn0rwPaxiKH6dBrZG9BmJt0at9mMBo6ov2QPQoIB1FcKXkWV8xwuu2BFMwMb00Bu2WrBOe");
