@@ -285,8 +285,8 @@
                                     <div class="title"> Pay By Payment Link</div>
                                     <div class="sub-title">Secure transfer using your bank account</div>
                                 </div>
-                                <div class="d-flex">
-                                   <img src="img/stripe.png" height="40" width="100">
+                                <div class="d-flex" style="align-items:center;">
+                                   <img src="img/stripe.png" height="30" width="80">
                                 </div>
                             </div>
                             
@@ -297,8 +297,8 @@
                                	    <div class="title">Wise</div>
                                 	<div class="sub-title">Secure online payment through the PayPal portal</div>
                                 </div>
-                                <div>
-    	                            <img src="img/wise.svg">
+                                <div class="d-flex" style="align-items:center;">
+    	                            <img src="img/wise.svg" height="20" width="96">
                     	   	    </div>
                     	    </div>
 

@@ -17,9 +17,9 @@ $inv_id = $_GET['inv_id'];
     var main_domain_link = '<?php echo MAIN_DOMAIN_LINK ?>';
     setTimeout(function() {
       
-       //window.location.href = main_domain_link + "/index.php?route=account/order&order_id=" + order_id;
+       window.location.href = main_domain_link + "/index.php?route=account/order&order_id=" + order_id;
        
-    }, 2000);
+    }, 3000);
     
 </script>
 <body>
@@ -29,7 +29,7 @@ $inv_id = $_GET['inv_id'];
     border-radius: 100%;
     overflow: hidden;
 ">
-        <h1 style="text-align:center;color: #59aa37;"> Payment Link Send Successfully on Email ID</h1>
+        <h2 style="text-align:center;color: #59aa37;">Payment Link Successfully Sent to Your Email</h2>
         <div  style="text-align:center;">INVOICE ID: <b><?php echo $inv_id ?></b></div><br/>
         <div style="text-align:center;">You're being redirected. Please don't refresh or close the window</div>
         
