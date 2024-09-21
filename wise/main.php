@@ -1,16 +1,9 @@
-<?php session_start();
-
-require '../env.php';
+<?php require '../env.php';
 
 if (!isset($_GET['order_id']) && empty($_GET['order_id']) ) {
     echo "Invalid Request";
     exit;
-} else {
-    
-     define('OID', $_GET['order_id']);
 }
-
-
 // Create connection
 $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
@@ -32,10 +25,9 @@ $product = array();
  
 if ($result->num_rows > 0) {
     
-    $sql = "UPDATE oc_order SET `payment_method` = 'Stripe', `payment_code` = 'Stripe' WHERE `order_id` =" . $order_id;
+    $sql = "UPDATE oc_order SET `payment_method` = 'Wise', `payment_code` = 'Wise' WHERE `order_id` =" . $order_id;
     
     $conn->query($sql);
-
 
     $order_total = 0;
     $firstname = "";
@@ -46,10 +38,7 @@ if ($result->num_rows > 0) {
     $zip = "";
     $country = "";
     $email = "";
-    $billing_phone = ''; 
-    $state = ''; 
-    $order_currency ='';
-    
+            
     // output data of each row
     while($row = $result->fetch_assoc()) {
         
@@ -71,7 +60,6 @@ if ($result->num_rows > 0) {
         $state = $row['payment_zone'];
         $order_currency = $row['currency_code'];
     }
-       
     $voucher = 'Order'.$order_id;
     $product = [ 
         'image' => '',
@@ -81,41 +69,46 @@ if ($result->num_rows > 0) {
         'name' => $voucher,
         'amount' => $order_total
     ];
-    
-    define('AMOUNT', $order_total);
-    define('DESCRIPTION', $voucher);
-    
-    define('NAME', $billing_firstname);
-    define('PHONE', $billing_phone);
-    define('ADDRESS1', $billing_address1);
-    define('ADDRESS2', $billing_address2);
-    define('CITY', $billing_city);
-    define('STATE', $state);
-    define('COUNTRY', $billing_country);
-    define('POSTAL_CODE', $billing_zip);
-    define('CURRENCY', $order_currency);
-    define('EMAIL', $billing_email);
-    
-    $sql1 = "SELECT * FROM oc_order_product WHERE order_id = " . $order_id;
+
+    $sql1 = "SELECT * FROM oc_currency WHERE `code` ='" . $order_currency ."' LIMIT 1";
+   
     $result1 = $conn->query($sql1);
-    $op = array();
 
-    if ($result1->num_rows > 0) {
-        
-      while($row1 = $result1->fetch_assoc()) {
-        
-        $op[] = [
-          'p_id' => $row1['product_id'],
-          'p_name' => $row1['name'],
-          'p_qty' => $row1['quantity'],
-          'p_price' => round($row1['total'])
-        ];
+    $currency_symbol = "";
 
-      }
+    while($row1 = $result1->fetch_assoc()) {
+        $currency_symbol = trim($row1['symbol_left']);
     }
-    define('ORDER_PRODUCT', $op);
+    ?>
 
+
+    <html>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <body>
+        <div style="margin:0 auto;padding: 60px;font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;;max-width: max-content;border-radius: 30px;min-height: 250px;display: flex;flex-direction: column;justify-content: center;background: #fff;box-shadow: 0 0 50px 0px rgb(81 85 106 / 30%);margin-top: 5%;">
+            <img src="loader.gif" width="300" height="200" style="margin: 0 auto;">
+            <h1 style="text-align:center;color: #59aa37;"> Redirecting to Payment</h1>
+            <div style="text-align:center;">You're being redirected. Please don't refresh or close the window</div>
+            
+        </div>
+    </body>
+    <script>
+        
+        var order_currency = "<?php echo $currency_symbol ?>";
+        var amount = "<?php echo $order_total ?>";
+        setTimeout(function() {
+        
+            window.location.href = "https://wise.com/pay/business/indogenmed?currency="+order_currency+"&amount="+amount;
+        
+        }, 2000);
+        
+    </script>
+    </html>
+
+<?php
 } else {
-  echo "Please try again!!!";
+  echo "Please try again!";
 }
 
+?>
