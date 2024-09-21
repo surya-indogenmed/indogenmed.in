@@ -54,28 +54,19 @@ if(empty($error)) {
             $sql = "UPDATE `oc_order` SET `order_status_id` = 15 WHERE `order_id` = '" . $order_id . "'";
             $conn->query($sql);
 
-            $sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = '".$transaction_id."', `order_status_id` = 15, `order_id` = '" . $order_id . "', date_added=NOW()";
+            // $sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = '".$transaction_id."', `order_status_id` = 15, `order_id` = '" . $order_id . "', date_added=NOW()";
             
-            $conn->query($sql1);
+            // $conn->query($sql1);
         }
         $output = [ 
             'transaction_id' => $transaction_id
         ];
         echo json_encode($output); 
-    } else { 
-
-        $sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = '".$transaction_id."', `order_status_id` = 1, `order_id` = '" . $order_id . "', date_added=NOW()";
-            
-        $conn->query($sql1);
-
+    }else{ 
         http_response_code(500); 
         echo json_encode(['error' => 'Transaction has been failed!']); 
     } 
-} else { 
-    $sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = '".$error."', `order_status_id` = 1, `order_id` = '" . $order_id . "', date_added=NOW()";
-            
-    $conn->query($sql1);
-
+}else{ 
     http_response_code(500);
     echo json_encode(['error' => $error]); 
 } 
