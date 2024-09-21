@@ -747,7 +747,7 @@
                 }
                 function wise(orderid) {
                         
-                    window.location = domain_link + "wise/index.php?order_id="+orderid;
+                    window.location = domain_link + "wise/main.php?order_id="+orderid;
                 }
 
                 function stripe_payment_link(orderid) {

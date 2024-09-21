@@ -25,7 +25,11 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
 }
 
 // WISE TEST TOKEN
-define('WISE_TOKEN', '637591a3-d9bc-47b2-bfde-cc33d20adfd3'); 
+//define('WISE_TOKEN', '637591a3-d9bc-47b2-bfde-cc33d20adfd3'); 
+
+// WISE LIVE TOKEN
+define('WISE_TOKEN', '665d6cca-6635-4cc9-a9ba-6593ea4e4f27'); 
+
 define('YOUR_SOURCE_ACCOUNT_ID', ''); 
 
 ?>
