@@ -29,7 +29,7 @@ $inv_id = $_GET['inv_id'];
     border-radius: 100%;
     overflow: hidden;
 ">
-        <h1 style="text-align:center;color: #59aa37;"> Payment Link Send Successfully on Email ID</h1>
+        <h2 style="text-align:center;color: #59aa37;">Payment Link Successfully Sent to Your Email</h2>
         <div  style="text-align:center;">INVOICE ID: <b><?php echo $inv_id ?></b></div><br/>
         <div style="text-align:center;">You're being redirected. Please don't refresh or close the window</div>
         
