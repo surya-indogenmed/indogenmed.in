@@ -300,7 +300,7 @@
                     <div class="payment p-1"> Payment Options</div>
                         <div class="d-flex flex-column payment-option">
 
-                            <?php if(in_array($geo_country, $config_stripe_countrywise_payment)) { ?>
+                            <?php if(in_array($geo_country, $config_stripe_countrywise_payment) || !$geo_country) { ?>
                             <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe" onclick="stripe('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
@@ -316,13 +316,13 @@
 
 
                             
-                            <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment)) { ?>
+                            <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment) || !$geo_country) { ?>
                             <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
                                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
                                     <div class="title"> Pay By Invoice</div>
-                                    <div class="sub-title">Secure transfer using your bank account</div>
+                                    <div class="sub-title">Secure transfer using payment link</div>
                                 </div>
                                 <div class="d-flex" style="align-items:center;">
                                    <img src="img/stripe.png" height="30" width="80" style="margin-left:1rem;">
@@ -330,13 +330,13 @@
                             </div>
                             <?php } ?>
                             
-                            <?php if(in_array($geo_country, $config_wise_countrywise_payment)) { ?>
+                            <?php if(in_array($geo_country, $config_wise_countrywise_payment) || !$geo_country) { ?>
                             <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
                                	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="wise">
                                	    <div class="title">Wise</div>
-                                	<div class="sub-title">Secure online payment through the PayPal portal</div>
+                                	<div class="sub-title">Secure online payment through the Wise portal</div>
                                 </div>
                                 <div class="d-flex" style="align-items:center;">
     	                            <img src="img/wise.svg" height="20" width="96" style="margin-left:1rem;">
@@ -344,7 +344,7 @@
                     	    </div>
                             <?php } ?>
                             
-                            <?php if(in_array($geo_country, $config_paypal_countrywise_payment)) { ?>
+                            <?php if(in_array($geo_country, $config_paypal_countrywise_payment) || !$geo_country) { ?>
                             <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
@@ -358,7 +358,7 @@
                     	    </div>
                             <?php } ?>
                             
-                            <?php if(in_array($geo_country, $config_banktransfer_countrywise_payment)) { ?>
+                            <?php if(in_array($geo_country, $config_banktransfer_countrywise_payment) || !$geo_country) { ?>
 	                        <label class="payment-list "  for="banktransfer" onclick="banktransfer('<?php echo $decoded_order_id ?>')">
 	                            
 	                            <div class="d-flex justify-content-between  flex-column flex-lg-row">
@@ -793,7 +793,7 @@
                 }
                 function wise(orderid) {
                         
-                    window.location = domain_link + "wise/index.php?order_id="+orderid;
+                    window.location = domain_link + "wise/main.php?order_id="+orderid;
                 }
 
                 function stripe_payment_link(orderid) {
