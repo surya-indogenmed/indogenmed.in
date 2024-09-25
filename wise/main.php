@@ -72,11 +72,22 @@ if ($result->num_rows > 0) {
    
     $result1 = $conn->query($sql1);
 
-    $currency_symbol = "";
+    $currency_value = 1;
+
+    $allowed_currency = ['USD', 'AUD', 'HUF', 'CHF', 'PLN', 'EUR', 'NZD', 'SGD', 'CAD', 'GDP', 'MYR'];
 
     while($row1 = $result1->fetch_assoc()) {
-        $currency_symbol = trim($row1['symbol_left']);
+        $currency_value = trim($row1['value']);
     }
+
+    $order_value_after_conversion = $order_total;
+    
+    if (!in_array($order_currency, $allowed_currency)) {
+
+        $order_value_after_conversion = round($order_total/$currency_value);
+        $order_currency = 'USD';
+    }
+
     ?>
 
 
@@ -93,8 +104,8 @@ if ($result->num_rows > 0) {
     </body>
     <script>
         
-        var order_currency = "<?php echo $currency_symbol ?>";
-        var amount = "<?php echo $order_total ?>";
+        var order_currency = "<?php echo $order_currency ?>";
+        var amount = "<?php echo $order_value_after_conversion ?>";
         setTimeout(function() {
         
             window.location.href = "https://wise.com/pay/business/indogenmed?currency="+order_currency+"&amount="+amount;
