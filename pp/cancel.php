@@ -1,4 +1,4 @@
-<?php
+<?php  require '../env.php';
 if (!isset($_GET['order_id']) && empty($_GET['order_id']) ) {
     echo "Invalid Request";
     exit;
@@ -75,8 +75,8 @@ $order_id = $_GET['order_id'];
         <div style="sub-heading">Sorry! Your PayPal payment has been cancelled.</div>
         </div>
             <div>
-            <a class="btn btn-try" href="https://indogenmed.in/pp/main.php?order_id=<?php echo $order_id; ?>">Retry Payment</a>
-            <a class="btn" href="https://indogenmed.in/payment/index.php?order_id=<?php echo $order_id; ?>">Other Payment Options</a>
+            <a class="btn btn-try" href="<?php echo DOMAIN_LINK ?>/pp/main.php?order_id=<?php echo $order_id; ?>">Retry Payment</a>
+            <a class="btn" href="<?php echo DOMAIN_LINK ?>/payment/index.php?order_id=<?php echo $order_id; ?>">Other Payment Options</a>
         </div>
     </div>
 </html>
