@@ -142,7 +142,6 @@ if ($result->num_rows > 0) {
 <script>
     setTimeout(function(){
        document.getElementById("pay").click(); 
-        
     }, 100);
      
 </script>

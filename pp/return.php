@@ -1,4 +1,4 @@
 
 <script>
-    window.location = 'https://indogenmed.com/';
+    window.location = 'https://indogenmed.org/';
 </script>
