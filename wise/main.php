@@ -15,8 +15,6 @@ if ($conn->connect_error) {
 
 $order_id = base64_decode($_GET['order_id']);
 
-define('ENCODED_OID', $order_id);
-
 $sql = "SELECT * FROM oc_order WHERE order_id = " . $order_id;
 
 $result = $conn->query($sql);
