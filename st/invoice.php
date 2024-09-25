@@ -17,6 +17,13 @@ require 'config.php';
 
 \Stripe\Stripe::setApiKey(STRIPE_SECRET_API_KEY);
 
+
+$conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+
+$sql = "UPDATE oc_order SET `payment_method` = 'Pay By Invoice', `payment_code` = 'Pay By Invoice' WHERE `order_id` =" . OID;
+    
+$conn->query($sql);
+
 // check customer already exists in stripe panel
 
 $get_customer = "";
@@ -104,7 +111,7 @@ if ($customer) {
 
       $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-      $sql1 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '".$invoice->id."', `order_status_id` = 1, `order_id` = '" . $order_id . "', date_added=NOW()";
+      $sql1 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
             
       $conn->query($sql1);
       

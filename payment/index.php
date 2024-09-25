@@ -23,8 +23,41 @@
     $result = $conn->query($sql);
     
     $product = array();
-     
+    
+    $setting_sql = "SELECT * FROM `oc_setting` WHERE `key` IN('config_stripe_countrywise_payment', 'config_stripe_paybyinvoice_countrywise_payment', 'config_banktransfer_countrywise_payment', 'config_paypal_countrywise_payment', 'config_wise_countrywise_payment')";
+    
+    $setting_result = $conn->query($setting_sql);
+
+    $config_stripe_countrywise_payment = array();
+    $config_stripe_paybyinvoice_countrywise_payment = array();
+    $config_banktransfer_countrywise_payment = array();
+    $config_paypal_countrywise_payment = array();
+    $config_wise_countrywise_payment = array();
+
+    if ($setting_result->num_rows > 0) {
+        // output data of each row
+        //print_r($setting_result->fetch_assoc());
+        while($setting_row = $setting_result->fetch_assoc()) {
+            if ($setting_row['key'] == 'config_stripe_countrywise_payment') {
+                $config_stripe_countrywise_payment = json_decode($setting_row['value'],1);
+            }
+            if($setting_row['key'] == 'config_stripe_paybyinvoice_countrywise_payment') {
+                $config_stripe_paybyinvoice_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_banktransfer_countrywise_payment'){
+                $config_banktransfer_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_paypal_countrywise_payment') {
+                $config_paypal_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_wise_countrywise_payment') {
+                $config_wise_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+        }
+    } 
+
     if ($result->num_rows > 0) {
+        $geo_country = "";
         $order_total = 0;
         $firstname = "";
         $lastname = "";
@@ -45,7 +78,8 @@
             $currency_total = $row['currency_value'];
 
             $order_total = round ($currency_total * $total);
-          
+            
+            $geo_country = $row['geo_country'];
             $billing_firstname = $row['payment_firstname'];
             $billing_lastname =  $row['payment_lastname'];
             $billing_address1 = $row['payment_address_1'];
@@ -265,6 +299,8 @@
 	                <div class="col-lg-8">
                     <div class="payment p-1"> Payment Options</div>
                         <div class="d-flex flex-column payment-option">
+
+                            <?php if(in_array($geo_country, $config_stripe_countrywise_payment)) { ?>
                             <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe" onclick="stripe('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
@@ -276,20 +312,25 @@
                                    <img src="img/cc.png">
                                 </div>
                             </div>
+                            <?php } ?>
 
 
+                            
+                            <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment)) { ?>
                             <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
                                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
-                                    <div class="title"> Pay By Payment Link</div>
+                                    <div class="title"> Pay By Invoice</div>
                                     <div class="sub-title">Secure transfer using your bank account</div>
                                 </div>
                                 <div class="d-flex" style="align-items:center;">
-                                   <img src="img/stripe.png" height="30" width="80">
+                                   <img src="img/stripe.png" height="30" width="80" style="margin-left:1rem;">
                                 </div>
                             </div>
+                            <?php } ?>
                             
+                            <?php if(in_array($geo_country, $config_wise_countrywise_payment)) { ?>
                             <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
@@ -298,10 +339,12 @@
                                 	<div class="sub-title">Secure online payment through the PayPal portal</div>
                                 </div>
                                 <div class="d-flex" style="align-items:center;">
-    	                            <img src="img/wise.svg" height="20" width="96">
+    	                            <img src="img/wise.svg" height="20" width="96" style="margin-left:1rem;">
                     	   	    </div>
                     	    </div>
-
+                            <?php } ?>
+                            
+                            <?php if(in_array($geo_country, $config_paypal_countrywise_payment)) { ?>
                             <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
@@ -313,7 +356,9 @@
     	                            <img src="img/paypal.png">
                     	   	    </div>
                     	    </div>
-
+                            <?php } ?>
+                            
+                            <?php if(in_array($geo_country, $config_banktransfer_countrywise_payment)) { ?>
 	                        <label class="payment-list "  for="banktransfer" onclick="banktransfer('<?php echo $decoded_order_id ?>')">
 	                            
 	                            <div class="d-flex justify-content-between  flex-column flex-lg-row">
@@ -681,6 +726,7 @@
                                
                                 </div>
                             </label>
+                            <?php } ?>
                         </div>
                         
                         </div>
