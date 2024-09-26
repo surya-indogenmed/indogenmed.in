@@ -101,9 +101,7 @@ if ($customer) {
   // Create an Invoice Item with the Price, and Customer you want to charge
   if($invoice) {
       $op = ORDER_PRODUCT;
-
-      echo  $invoice->id;
-
+      
       foreach($op as $order_product) {
         try { 
           $invoiceItem = \Stripe\InvoiceItem::create([
@@ -120,9 +118,9 @@ if ($customer) {
         }
       }
     
-      $email = $stripe->invoices->sendInvoice($invoice->id, []);
-      print_r($email);
-      die;
+      // $email = $stripe->invoices->sendInvoice($invoice->id, []);
+      // print_r($email);
+      // die;
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 
@@ -132,12 +130,10 @@ if ($customer) {
             
       $conn->query($sql1);
 
-      //header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
-      //die();
+      header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
+      die();
   }
   
 } else {
   echo "Error in Customer Creation";
 }
-// shipping cost
-// qty
