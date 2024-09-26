@@ -77,8 +77,20 @@ if ($customer) {
       'collection_method' => 'send_invoice',
       'days_until_due' => 30,
       'currency'  => strtolower(CURRENCY),
-      'description'  => 'INVOICE CREATED FROM PAYMENT PAGE',
-      
+      'description'  => 'Order' . DECODED_OID,
+      // 'amount_shipping' => 177,
+      'shipping_cost' => [
+        'shipping_rate_data' => [
+          'display_name' => SHIPPING_TITLE,
+          'fixed_amount' => [
+            'amount' => (int)SHIPPING_AMOUNT,
+            'currency' => strtolower(CURRENCY)
+          ],
+          'tax_behavior' => 'inclusive',
+          'type' => 'fixed_amount'
+        ]
+        ],
+      'footer' => "We are registered and audited by the Food Safety and Drug Control Commissionerate, Rajasthan Government, in Rajasthan, India, with licence numbers DRUG/2022-23/81145 and DRUG/2022-23/81144.",
     ]);
 
   } catch(Exception $e) { 
@@ -89,20 +101,26 @@ if ($customer) {
   // Create an Invoice Item with the Price, and Customer you want to charge
   if($invoice) {
       $op = ORDER_PRODUCT;
-
+      
       foreach($op as $order_product) {
         try { 
           $invoiceItem = \Stripe\InvoiceItem::create([
             'customer' => $customer->id,
-            'amount' => round($order_product['p_price']*100),
-            'description' => $order_product['p_name'] . '-'. $order_product['p_id'],
-            'invoice' => $invoice->id
+            'unit_amount' => round($order_product['p_price']*100),
+            'description' => 'Product ID -'. $order_product['p_id'],
+            'invoice' => $invoice->id,
+            'quantity' => $order_product['p_qty'],
+            'currency' => strtolower(CURRENCY)
           ]);
         } catch(Exception $e) { 
           $error = $e->getMessage();
           print_r($error);
         }
       }
+    
+      // $email = $stripe->invoices->sendInvoice($invoice->id, []);
+      // print_r($email);
+      // die;
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 
@@ -119,5 +137,3 @@ if ($customer) {
 } else {
   echo "Error in Customer Creation";
 }
-// shipping cost
-// qty
