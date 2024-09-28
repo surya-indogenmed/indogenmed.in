@@ -133,7 +133,7 @@
         cursor:pointer;
     }
     .payment-list li.active {
-        border-color: #3680d3;
+        border: 2px solid #3680d3;
         background-color: #fbfdff;
     }
     .payment-option{
@@ -448,7 +448,7 @@
                                 </div>
                                 <div style="display:none" class="bank_list">
                                 <ul>
-                                    <li class="active">
+                                    <li class="active eur">
                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse1" >
                                             <img src="img/eur.svg">
                                             <div class="icon_text">
@@ -859,8 +859,14 @@
                     $('.bank_list li').removeClass('active');
                     $(".bank_list .collapse").not(e.target).collapse('hide');
                     var panel = $(e.target).parent("li");
-                    panel.addClass("active")
-                })
+                    panel.addClass("active");
+                    if( $('.bank_list li.active').length  == 0 ) {
+                        $('.bank_list .eur').addClass('active');
+
+                    }
+                   
+                });
+                
                 // Remove active class from bank on collapse
                 
                 
@@ -881,8 +887,7 @@
                     $('.bank_list').show();
                 }
                 $( document ).ready(function() {
-
-
+                            
                             $('#save_bank_transfer').click(function() {
                                 var ord_id = $('#order__id').val();
                                 var bank_data = $("ul li.active .detail .tab-pane").html();
