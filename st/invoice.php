@@ -77,7 +77,7 @@ if ($customer) {
       'collection_method' => 'send_invoice',
       'days_until_due' => 30,
       'currency'  => strtolower(CURRENCY),
-      'description'  => 'Order' . DECODED_OID,
+      'description'  => 'Order #' . DECODED_OID,
       // 'amount_shipping' => 177,
       'shipping_cost' => [
         'shipping_rate_data' => [

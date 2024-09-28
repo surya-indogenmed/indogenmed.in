@@ -1,7 +1,4 @@
-<?php
-
-    require '../env.php';
-
+<?php require '../st/config.php';
     if (!isset($_GET['order_id']) && empty($_GET['order_id']) ) {
         echo "Invalid Request";
         exit;
@@ -263,6 +260,9 @@
           .main-box{
     	padding: 2em;
      }  
+     .main-box_st{
+    	padding: 0 2em;
+     }  
     }
     .nav-tabs {
         border-bottom: transparent;
@@ -301,23 +301,103 @@
                         <div class="d-flex flex-column payment-option">
 
                             <?php if(in_array($geo_country, $config_stripe_countrywise_payment) || !$geo_country) { ?>
-                            <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe" onclick="stripe('<?php echo $decoded_order_id ?>')">
-                                <div class="form-check">
-                                   
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe">
-                                    <div class="title">  Credit/Debit Card</div>
-                                    <div class="sub-title">Secure transfer using your bank account</div>
-                                </div>
-                                <div class="d-flex">
-                                   <img src="img/cc.png">
-                                </div>
+                            <label class="payment-list" data-toggle="collapse" href="#collapse_stripe" role="button" aria-expanded="false" aria-controls="collapse_stripe">
+                                <div class=" d-flex justify-content-between  flex-column flex-lg-row" for="stripe_pg">
+                                    <div class="form-check">
+                                    
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_pg">
+                                        <div class="title">  Credit/Debit Card</div>
+                                        <div class="sub-title">Secure transfer using your bank account</div>
+                                    </div>
+                                    <div class="d-flex">
+                                    <img src="img/cc.png">
+                                    </div>
+                                </div> 
+                                <!--stripe-->
+                                <div id="collapse_stripe" class="collapse payment-list mt-3">
+                                <style>
+                                    .cancel {
+                                        border:1px solid lightgrey;
+                                        border-radius:10px;
+                                        padding: 10px 20px;
+                                        color: #000;
+                                        text-decoration: none;
+                                    }
+                                    
+                                </style>
+
+                                <link rel='stylesheet' href='../st/style.css' type='text/css' media='all' />
+                                <div class="main-box_st">
+
+                                <?php  if ( AMOUNT > 0 ) { ?>
+                                
+                                    
+                                    
+                                    <div>
+                                    
+                                    <!-- Display status message -->
+                                    <div id="stripe-payment-message" class="hidden"></div>
+                                    
+                                    
+                                    
+                                    <form id="stripe-payment-form" class="hidden">
+                                        <input type="text" id="oid" class="form-control hide" maxlength="50" required value="<?php echo OID; ?>" autofocus>
+                                        <input type='hidden' id='publishable_key' value='<?php echo STRIPE_PUBLISHABLE_KEY;?>'>
+                                        <input type="text" id="fullname" class="form-control hide" maxlength="50" required value="<?php echo NAME; ?>" autofocus>
+                                        <input type="email" id="email" class="form-control hide" maxlength="50" value="<?php echo EMAIL; ?>" required>
+                                        
+                                        <div id="loadingmsg" class="text-center" style="margin-bottom:20px"> Please wait ...</div>
+                                        <div id="heading" class="hide">
+                                            <h5 class="" >Enter Credit Card Information</h5>
+                                        </div>
+                                        <div id="stripe-payment-element">
+                                            <!--Stripe.js will inject the Payment Element here to get card details-->
+                                        </div>
+                                    
+                                        <button id="submit-button" class="btn btn-primary btn-block btn-lg hide mt-3">
+                                            <div class="spinner hidden" id="spinner"></div>
+                                            <span id="submit-text">Pay Now</span>
+                                        </button>
+                                    </form>
+
+                                    <!-- Display the payment processing -->
+                                    <div id="payment_processing" class="hidden text-center">
+                                        <span class="loader text-center" style="margin:0 auto"></span> Please wait! Your payment is processing...
+                                    </div>
+                                    
+                                    <!-- Display the payment reinitiate button -->
+                                    <div id="payment-reinitiate" class="hidden">
+                                        <button class="btn btn-primary" onclick="reinitiateStripe()">Reinitiate Payment</button>
+                                    </div>
+                                    
+                                    <br>
+                                    <div style="clear:both;"></div>
+                                
+                                    </div>    
+                                    <script src="https://js.stripe.com/v3/"></script>
+                                    <script src="../st/stripe-checkout.js" defer></script>
+                                    
+                                <?php   } ?>
+
+                                </div>  
+                                <script>
+                                // setTimeout(function(){
+                                    //  document.getElementById("pay").click(); 
+                                        
+                                //  }, 100);
+                                    
+                                </script>
                             </div>
-                            <?php } ?>
+                            <!--stripe-->
+
+                        </label>
+                            
+                        <?php } ?>
 
 
                             
                             <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment) || !$geo_country) { ?>
-                            <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
+                            <label class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
                                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
@@ -327,11 +407,11 @@
                                 <div class="d-flex" style="align-items:center;">
                                    <img src="img/stripe.png" height="30" width="80" style="margin-left:1rem;">
                                 </div>
-                            </div>
+                            </label>
                             <?php } ?>
                             
                             <?php if(in_array($geo_country, $config_wise_countrywise_payment) || !$geo_country) { ?>
-                            <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
+                            <label class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
                                	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="wise">
@@ -341,11 +421,11 @@
                                 <div class="d-flex" style="align-items:center;">
     	                            <img src="img/wise.svg" height="20" width="96" style="margin-left:1rem;">
                     	   	    </div>
-                    	    </div>
+                    	    </label>
                             <?php } ?>
                             
                             <?php if(in_array($geo_country, $config_paypal_countrywise_payment) || !$geo_country) { ?>
-                            <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
+                            <label class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
                                <div class="form-check">
                                 	
                                	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="paypal">
@@ -355,7 +435,7 @@
                                 <div>
     	                            <img src="img/paypal.png">
                     	   	    </div>
-                    	    </div>
+                    	    </label>
                             <?php } ?>
                             
                             <?php if(in_array($geo_country, $config_banktransfer_countrywise_payment) || !$geo_country) { ?>
@@ -374,7 +454,7 @@
                                 </div>
                                 <div style="display:none" class="bank_list">
                                 <ul>
-                                    <li>
+                                    <li class="active">
                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse1" >
                                             <img src="img/eur.svg">
                                             <div class="icon_text">
@@ -775,17 +855,19 @@
             </div>
             <script>
                 var domain_link = '<?php echo DOMAIN_LINK ?>';
-            
+                
+                // Set active class to select banks in bank transfer method 
+               
+                
                 // Set active class to select banks in bank transfer method 
                 $(document).on("shown.bs.collapse", function(e) {
-                    $(".collapse").not(e.target).collapse('hide');
+                    $('.bank_list li').removeClass('active');
+                    $(".bank_list .collapse").not(e.target).collapse('hide');
                     var panel = $(e.target).parent("li");
                     panel.addClass("active")
                 })
                 // Remove active class from bank on collapse
-                $(document).on("hidden.bs.collapse", function(e) {
-                    $(e.target).parent('li').removeClass('active');
-                })
+                
                 
                 function paypal(orderid) {
                     
@@ -800,7 +882,7 @@
                         
                     window.location =  domain_link + "st/invoice.php?order_id="+orderid;
                 }
-                function stripe(orderid) {
+                function stripe_pg(orderid) {
                     
                     window.location =  domain_link + "st/main.php?order_id="+orderid;
                 }
