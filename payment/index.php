@@ -105,8 +105,8 @@
         background: #fbfbfb;
     }
     .topbar{
-    	background-color: #262632;
-    	height: 60px;
+    	border-bottom: 1px solid lightgrey;
+    	height: 70px;
     } 
     
      .checkout{
@@ -239,10 +239,7 @@
     .nav-tabs .nav-link {
         font-size:14px;
     }
-    .main-box1 a, .main-box1 a:hover { 
-        color:#fff;
-        
-    }
+    
     .main-box1{ 
         padding: 8px 10px;
     }
@@ -287,8 +284,11 @@
 	<body>
 		<div class="">
 			<div class="topbar">
-                <div class="main-box1">
-                    <a href="<?php echo MAIN_DOMAIN_LINK ?>index.php?route=checkout/cart" class="btn cancel">Back</a>
+                <div class="main-box1 d-flex justify-content-between align-items-center">
+                    <a href="<?php echo MAIN_DOMAIN_LINK; ?>" class="">
+                        <img src="https://indogenmed.gumlet.io/image/catalog/cat-icon/cropped-indogen-logo-4.webp?w=234">
+                    </a>
+                    <a href="<?php echo MAIN_DOMAIN_LINK; ?>index.php?route=checkout/cart" class="btn cancel">Back</a>
                 </div>
             </div>
             <div class="main-box">
@@ -301,7 +301,8 @@
                         <div class="d-flex flex-column payment-option">
 
                             <?php if(in_array($geo_country, $config_stripe_countrywise_payment) || !$geo_country) { ?>
-                            <label class="payment-list" data-toggle="collapse" href="#collapse_stripe" role="button" aria-expanded="false" aria-controls="collapse_stripe">
+                            <div class="payment-list">
+                            <label class="" data-toggle="collapse" href="#collapse_stripe" role="button" aria-expanded="false" aria-controls="collapse_stripe">
                                 <div class=" d-flex justify-content-between  flex-column flex-lg-row" for="stripe_pg">
                                     <div class="form-check">
                                     
@@ -313,6 +314,7 @@
                                     <img src="img/cc.png">
                                     </div>
                                 </div> 
+                            </label>
                                 <!--stripe-->
                                 <div id="collapse_stripe" class="collapse payment-list mt-3">
                                 <style>
@@ -331,8 +333,6 @@
 
                                 <?php  if ( AMOUNT > 0 ) { ?>
                                 
-                                    
-                                    
                                     <div>
                                     
                                     <!-- Display status message -->
@@ -348,7 +348,7 @@
                                         
                                         <div id="loadingmsg" class="text-center" style="margin-bottom:20px"> Please wait ...</div>
                                         <div id="heading" class="hide">
-                                            <h5 class="" >Enter Credit Card Information</h5>
+                                            <h6 class="" >Enter Credit Card Information</h6>
                                         </div>
                                         <div id="stripe-payment-element">
                                             <!--Stripe.js will inject the Payment Element here to get card details-->
@@ -380,17 +380,11 @@
                                 <?php   } ?>
 
                                 </div>  
-                                <script>
-                                // setTimeout(function(){
-                                    //  document.getElementById("pay").click(); 
-                                        
-                                //  }, 100);
-                                    
-                                </script>
+                
                             </div>
                             <!--stripe-->
 
-                        </label>
+                            </div>
                             
                         <?php } ?>
 
@@ -858,7 +852,8 @@
                 
                 // Set active class to select banks in bank transfer method 
                
-                
+                $('#stripe_pg').trigger('click');
+
                 // Set active class to select banks in bank transfer method 
                 $(document).on("shown.bs.collapse", function(e) {
                     $('.bank_list li').removeClass('active');
@@ -881,10 +876,6 @@
                 function stripe_payment_link(orderid) {
                         
                     window.location =  domain_link + "st/invoice.php?order_id="+orderid;
-                }
-                function stripe_pg(orderid) {
-                    
-                    window.location =  domain_link + "st/main.php?order_id="+orderid;
                 }
                 function banktransfer(orderid) {
                     $('.bank_list').show();
@@ -919,3 +910,9 @@
 <?php } else { ?>
     <div>Invalid Request !!</div>
 <?php } ?>
+
+<p class="text-center">
+          © Copyright 2024-25. Indogenmed Healthcare © 2022
+
+          
+</p>
