@@ -7,7 +7,7 @@ reading posted data directly from $_POST causes serialization
 issues with array data in POST.
 Reading raw POST data from input stream instead.
 */
-// define("IPN_LOG_FILE", "ipn.log");
+define("IPN_LOG_FILE", "ipn.log");
 // $raw_post_data = file_get_contents('php://input');
 
 // error_log(date('[Y-m-d H:i e] '). 
