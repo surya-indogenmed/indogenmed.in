@@ -19,10 +19,8 @@ error_log(date('[Y-m-d H:i e] ').
 $params = json_decode($raw_post_data, true);
 
 $webhook_data = $params['data']; 
-$webhook_data_status = $params['data']['status']; 
+$webhook_data_status = $params['data']['object']['status']; 
 
-error_log(date('[Y-m-d H:i e] '). 
-		"post params IPN: $webhook_data" . PHP_EOL, 3, IPN_LOG_FILE);
 
 error_log(date('[Y-m-d H:i e] '). 
 		"post params IPN: $webhook_data_status " . PHP_EOL, 3, IPN_LOG_FILE);
