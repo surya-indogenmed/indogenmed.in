@@ -20,7 +20,7 @@ $params = json_decode($raw_post_data, true);
 
 $webhook_data = $params['data']; 
 $webhook_data_status = $params['data']['object']['status']; 
-$webhook_data_order_id = $params['data']['object']['description'];
+$webhook_data_invoice_id = $params['data']['object']['invoice'];
 
 error_log(date('[Y-m-d H:i e] '). 
 		"post params IPN: $webhook_data_id " . PHP_EOL, 3, IPN_LOG_FILE);
@@ -30,22 +30,41 @@ error_log(date('[Y-m-d H:i e] ').
 	
 if ($webhook_data_status == 'succeeded' && $webhook_data_order_id > 0 ) {
 	
-	//Check Unique Transcation ID
-	$conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
-        
-    // Check connection
-    if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-    }
-    
-    if($webhook_data_order_id > 0 ) {
+	try { 
+
+		//Check Unique Transcation ID
+		$conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+			
+		// Check connection
+		if ($conn->connect_error) {
+			die("Connection failed: " . $conn->connect_error);
+		}
+
+		$invoiceData = \Stripe\Invoice::retrieve([
+			'invoice' => $webhook_data_invoice_id
+		]);
+		$inv_id = $invoiceData['description'];
+
+		error_log(date('[Y-m-d H:i e] '). 
+		"post params INVDATA: $invoiceData " . PHP_EOL, 3, IPN_LOG_FILE);
+
+		error_log(date('[Y-m-d H:i e] '). 
+		"post params INVID: $inv_id " . PHP_EOL, 3, IPN_LOG_FILE);
 		
-        $sql = "UPDATE `order` SET `order_status_id` = '15' WHERE `order_id` = '" . $webhook_data_order_id . "'";
-        $result = $conn->query($sql);
-      	$sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = 'Stripe Pay By Invoice Success Webhook Call', `order_status_id` = 15, `order_id` = '" . $webhook_data_order_id . "', date_added=NOW()";
-            
-      	$conn->query($sql1);
+		if($webhook_data_order_id > 0 ) {
+
+			//$sql = "UPDATE `order` SET `order_status_id` = '15' WHERE `stripe_invoice_id` = '" . $$inv_id . "'";
+			//$result = $conn->query($sql);
+			//$sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = 'Stripe Pay By Invoice Success Webhook Call', `order_status_id` = 15, `order_id` = '" . $webhook_data_order_id . "', date_added=NOW()";
+				
+			// $conn->query($sql1);
+		}
+	} catch(Exception $e) { 
+		// $error = $e->getMessage();
+		// print_r($error);
 	}
+
+	
 
 }
 
