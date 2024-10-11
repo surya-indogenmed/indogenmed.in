@@ -118,17 +118,14 @@ if ($customer) {
         }
       }
     
-      // $email = $stripe->invoices->sendInvoice($invoice->id, []);
-      // print_r($email);
-      // die;
-      // Send the Invoice
-      $mail = $invoice->sendInvoice();
-
       $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-      $sql1 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
+      $sql1 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated, Invoice ID'".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
             
       $conn->query($sql1);
+      
+      // Send the Invoice
+      $mail = $invoice->sendInvoice();
 
       header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
       die();
