@@ -18,7 +18,7 @@ require 'config.php';
 
 $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-$sql = "UPDATE oc_order SET `payment_method` = 'Pay By Invoice', `payment_code` = 'Pay By Invoice' WHERE `order_id` =" . OID;
+$sql = "UPDATE oc_order SET `payment_method` = 'Stripe Pay By Invoice', `payment_code` = 'Stripe Pay By Invoice' WHERE `order_id` =" . DECODED_OID;
     
 $conn->query($sql);
 
@@ -120,14 +120,14 @@ if ($customer) {
     
       $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-      $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated, Invoice ID'".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
+      $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated, Invoice ID'".$invoice->id."', `order_status_id` = 1, `order_id` = '" . DECODED_OID . "', date_added=NOW()";
             
       $conn->query($sql2);
 
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 
-      header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
+      header("Refresh: 3; url=/st/invoice_success.php?order_id=".DECODED_OID."&inv_id=".$invoice->id);
       die();
   }
   

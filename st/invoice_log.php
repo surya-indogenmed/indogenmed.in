@@ -55,7 +55,7 @@ if ($webhook_data_status == 'succeeded') {
 			$sql = "UPDATE `order` SET `order_status_id` = '15' WHERE `order_id` = '" . $order_id . "'";
 			$result = $conn->query($sql);
 
-			$sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = 'Invoice ID '" .$webhook_data_invoice_id . "' Stripe Pay By Invoice Success Webhook Call', `order_status_id` = 15, `order_id` = '" . $order_id . "', date_added=NOW()";
+			$sql1 = "INSERT INTO `oc_order_history` SET notify = 0, `comment` = 'Stripe Pay By Invoice Success Webhook Call', `order_status_id` = 15, `order_id` = '" . $order_id . "', date_added=NOW()";
 				
 			$conn->query($sql1);
 		}
