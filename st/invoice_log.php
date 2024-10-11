@@ -46,9 +46,8 @@ if ($webhook_data_status == 'succeeded') {
 			die("Connection failed: " . $conn->connect_error);
 		}
 
-		$invoiceData = \Stripe\Invoice::retrieve([
-			'invoice' => $webhook_data_invoice_id
-		]);
+		$invoiceData = \Stripe\Invoice::retrieve($webhook_data_invoice_id);
+		
 		$inv_id = $invoiceData['description'];
 
 		error_log(date('[Y-m-d H:i e] '). 
