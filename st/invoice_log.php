@@ -1,5 +1,8 @@
 <?php
-require '../env.php';
+require 'vendor/autoload.php';
+require 'config.php';
+
+\Stripe\Stripe::setApiKey(STRIPE_SECRET_API_KEY);
 
 /*
 Read POST data
@@ -28,8 +31,11 @@ error_log(date('[Y-m-d H:i e] ').
 error_log(date('[Y-m-d H:i e] '). 
 		"post params IPN: $webhook_data_status " . PHP_EOL, 3, IPN_LOG_FILE);
 	
-if ($webhook_data_status == 'succeeded' && $webhook_data_order_id > 0 ) {
+if ($webhook_data_status == 'succeeded') {
 	
+	error_log(date('[Y-m-d H:i e] '). 
+		"post params Invoice Id: $webhook_data_invoice_id " . PHP_EOL, 3, IPN_LOG_FILE);
+
 	try { 
 
 		//Check Unique Transcation ID
