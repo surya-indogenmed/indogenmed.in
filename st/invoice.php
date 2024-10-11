@@ -118,12 +118,12 @@ if ($customer) {
         }
       }
     
-      $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
+      $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-      $sql1 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated, Invoice ID'".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
+      $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated, Invoice ID'".$invoice->id."', `order_status_id` = 1, `order_id` = '" . OID . "', date_added=NOW()";
             
-      $conn->query($sql1);
-      
+      $conn->query($sql2);
+
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 

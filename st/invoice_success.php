@@ -17,7 +17,7 @@ $inv_id = $_GET['inv_id'];
     var main_domain_link = '<?php echo MAIN_DOMAIN_LINK ?>';
     setTimeout(function() {
       
-        window.location.href = main_domain_link + "/index.php?route=account/order&order_id=" + order_id;
+        window.location.href = main_domain_link + "/index.php?route=extension/payment/cod/stripePaymentLink&pay=1&status_id=15&order_id=" + order_id;
 
     }, 3000);
     
