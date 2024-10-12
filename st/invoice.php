@@ -129,7 +129,7 @@ if ($customer) {
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 
-      header("Refresh: 3; url=/st/invoice_success.php?order_id=".DECODED_OID."&inv_id=".$invoice->id);
+      header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
       die();
   }
   
