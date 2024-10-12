@@ -18,10 +18,10 @@ require 'config.php';
 
 $conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-$sql = "UPDATE oc_order SET `payment_method` = 'Stripe Pay By Invoice', `payment_code` = 'Stripe Pay By Invoice' WHERE `order_id` =" . DECODED_OID;
+echo $sql = "UPDATE oc_order SET `payment_method` = 'Stripe Pay By Invoice', `payment_code` = 'Stripe Pay By Invoice' WHERE `order_id` =" . DECODED_OID;
     
 $conn->query($sql);
-
+die;
 // check customer already exists in stripe panel
 
 $get_customer = "";
