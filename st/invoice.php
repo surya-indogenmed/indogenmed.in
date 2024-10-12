@@ -120,12 +120,12 @@ if ($customer) {
     
       $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-      echo $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = 'Pay By Invoice Invoice Generated', `order_status_id` = 1, `order_id` = '" . DECODED_OID . "', date_added=NOW()";
+      $msg = "Pay By Invoice Invoice Generated Invoice Id " .$invoice->id;
+
+      echo $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '" . $msg . "', `order_status_id` = 1, `order_id` = '" . DECODED_OID . "', date_added=NOW()";
             
       $conn->query($sql2);
-
       die;
-      
       // Send the Invoice
       $mail = $invoice->sendInvoice();
 
