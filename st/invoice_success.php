@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php'; 
+require '../env.php'; 
 if (!isset($_GET['order_id'])) {
     echo "Something went wrong";
     exit;
