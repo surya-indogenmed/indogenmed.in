@@ -935,6 +935,18 @@
     <div>Invalid Request !!</div>
 <?php } ?>
 
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/667a7e0f9d7f358570d32194/1i177os16';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
 <p class="text-center">
           © Copyright 2024-25. Indogenmed Healthcare © 2022
 

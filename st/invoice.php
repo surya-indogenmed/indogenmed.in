@@ -3,7 +3,7 @@
     <img src="loader.gif" width="300" height="200" style="
     margin: 0 auto;
 ">
-        <h1 style="text-align:center;color: #0e64b3;margin-top:0"> Generating Payment Link</h1>
+        <h1 style="text-align:center;color: #0e64b3;margin-top:0">Generating Invoice</h1>
         <div style="text-align:center;">You're being redirected. Please don't refresh or close the window</div>
 
     </div>
@@ -117,6 +117,16 @@ if ($customer) {
           print_r($error);
         }
       }
+
+      $invoiceItem = \Stripe\InvoiceItem::create([
+        'customer' => $customer->id,
+        'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
+        'description' => TELE_CONFERENCE_TITLE,
+        'invoice' => $invoice->id,
+        'quantity' => 1,
+        'currency' => strtolower(CURRENCY)
+      ]);
+
     
       $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 

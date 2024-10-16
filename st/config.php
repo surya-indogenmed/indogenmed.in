@@ -126,6 +126,10 @@ if ($result->num_rows > 0) {
           define('SHIPPING_AMOUNT', $shipping_row['value']);
           define('SHIPPING_TITLE', $shipping_row['title']);
         }
+        if ($shipping_row['code'] == 'teleconference') {
+          define('TELE_CONFERENCE_AMOUNT', $shipping_row['value']);
+          define('TELE_CONFERENCE_TITLE', $shipping_row['title']);
+        }
       }
     }
 
