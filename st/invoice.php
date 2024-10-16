@@ -83,7 +83,7 @@ if ($customer) {
         'shipping_rate_data' => [
           'display_name' => SHIPPING_TITLE,
           'fixed_amount' => [
-            'amount' => (int)SHIPPING_AMOUNT,
+            'amount' => round(SHIPPING_AMOUNT*100),
             'currency' => strtolower(CURRENCY)
           ],
           'tax_behavior' => 'inclusive',
