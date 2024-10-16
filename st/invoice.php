@@ -106,7 +106,7 @@ if ($customer) {
         try { 
           $invoiceItem = \Stripe\InvoiceItem::create([
             'customer' => $customer->id,
-            'unit_amount' => round($order_product['p_price']*100),
+            'unit_amount' => round($order_product['p_unit_price']*100),
             'description' => 'Product ID -'. $order_product['p_id'],
             'invoice' => $invoice->id,
             'quantity' => $order_product['p_qty'],
