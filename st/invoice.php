@@ -100,6 +100,7 @@ if ($customer) {
           'quantity' => 1,
           'currency' => strtolower(CURRENCY)
         ]);
+      }
       // Create an Invoice
   echo "======";
   try { 
