@@ -67,7 +67,7 @@ $get_customer = "";
   $conn->query($sql2);
 
 }*/
-
+print_r($customer);
 if ($customer) {
   // Create an Invoice
   
@@ -97,7 +97,7 @@ if ($customer) {
     $error = $e->getMessage();
     //print_r($error);
   } 
-  
+  print_r($invoice);
   // Create an Invoice Item with the Price, and Customer you want to charge
   if($invoice) {
       $op = ORDER_PRODUCT;
@@ -117,7 +117,8 @@ if ($customer) {
           print_r($error);
         }
       }
-
+      echo "----";
+print_r($invoiceItem);
       if (defined(TELE_CONFERENCE_AMOUNT)) {
 
         // $invoiceItem = \Stripe\InvoiceItem::create([
@@ -134,7 +135,7 @@ if ($customer) {
 
       $msg = "Pay By Invoice Invoice Generated Invoice Id " .$invoice->id;
 
-      $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '" . $msg . "', `order_status_id` = 1, `order_id` = '" . DECODED_OID . "', date_added=NOW()";
+     echo $sql2 = "INSERT INTO `oc_order_history` SET notify = 1, `comment` = '" . $msg . "', `order_status_id` = 1, `order_id` = '" . DECODED_OID . "', date_added=NOW()";
             
       $conn->query($sql2);
       
