@@ -9,17 +9,17 @@ $email = !empty($jsonObj->email)?$jsonObj->email:'';
     
 $get_customer = "";
 
-try {
-    $get_customer = \Stripe\Customer::search([
-        'query' => 'email:\'' . $email . '\''
-    ]);
-} catch(Exception $e) {   
-    $error = $e->getMessage();
-    print_r($error);
-} 
+// try {
+//     $get_customer = \Stripe\Customer::search([
+//         'query' => 'email:\'' . $email . '\''
+//     ]);
+// } catch(Exception $e) {   
+//     $error = $e->getMessage();
+//     print_r($error);
+// } 
 
 // Add new customer fullname and email to stripe 
-if(empty($get_customer['data'])) {
+//if(empty($get_customer['data'])) {
     try {   
         $customer = \Stripe\Customer::create(array(  
             'name' => $fullname,  
@@ -42,7 +42,7 @@ if(empty($get_customer['data'])) {
     } catch(Exception $e) {   
         $error = $e->getMessage();
     } 
-} else {
+/*} else {
 
     $customer = $get_customer['data'][0];
     // Update customerId in DB
@@ -50,7 +50,7 @@ if(empty($get_customer['data'])) {
     $sql2 = "UPDATE `oc_customer` SET stripe_customer_id = '" . $customer->id . "' WHERE email='" . EMAIL ."'";
         
     $conn->query($sql2);
-}  
+}  */
 if(empty($error) && !empty($customer)){
     try {
         // Attach Customer Data with PaymentIntent using customer ID
