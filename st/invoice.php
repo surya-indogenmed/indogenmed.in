@@ -95,7 +95,7 @@ if ($customer) {
 
   } catch(Exception $e) { 
     $error = $e->getMessage();
-    //print_r($error);
+    print_r($error);
   } 
   print_r($invoice);
   // Create an Invoice Item with the Price, and Customer you want to charge
