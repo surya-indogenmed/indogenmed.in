@@ -139,7 +139,7 @@ if ($customer) {
       $conn->query($sql2);
       
       // Send the Invoice
-      $mail = $invoice->sendInvoice();
+     // $mail = $invoice->sendInvoice();
 
       header("Refresh: 3; url=/st/invoice_success.php?order_id=".OID."&inv_id=".$invoice->id);
       die();
