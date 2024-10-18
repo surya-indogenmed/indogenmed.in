@@ -70,7 +70,7 @@ $get_customer = "";
 print_r($customer);
 if ($customer) {
   // Create an Invoice
-  
+  echo "======";
   try { 
     $invoice = \Stripe\Invoice::create([
       'customer' => $customer->id,
