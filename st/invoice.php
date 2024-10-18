@@ -69,7 +69,38 @@ $get_customer = "";
 }*/
 print_r($customer);
 if ($customer) {
-  // Create an Invoice
+    // Create an Invoice Item with the Price, and Customer you want to charge
+
+      $op = ORDER_PRODUCT;
+      
+      foreach($op as $order_product) {
+        try { 
+          $invoiceItem = \Stripe\InvoiceItem::create([
+            'customer' => $customer->id,
+            'unit_amount' => round($order_product['p_unit_price']*100),
+            'description' => 'Product ID -'. $order_product['p_id'],
+            //'invoice' => $invoice->id,
+            'quantity' => $order_product['p_qty'],
+            'currency' => strtolower(CURRENCY)
+          ]);
+        } catch(Exception $e) { 
+          $error = $e->getMessage();
+          print_r($error);
+        }
+      }
+      echo "----";
+      print_r($invoiceItem);
+      if (defined(TELE_CONFERENCE_AMOUNT)) {
+
+        $invoiceItem = \Stripe\InvoiceItem::create([
+          'customer' => $customer->id,
+          'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
+          'description' => TELE_CONFERENCE_TITLE,
+          'invoice' => $invoice->id,
+          'quantity' => 1,
+          'currency' => strtolower(CURRENCY)
+        ]);
+      // Create an Invoice
   echo "======";
   try { 
     $invoice = \Stripe\Invoice::create([
@@ -98,38 +129,9 @@ if ($customer) {
     print_r($error);
   } 
   print_r($invoice);
-  // Create an Invoice Item with the Price, and Customer you want to charge
-  if($invoice) {
-      $op = ORDER_PRODUCT;
-      
-      foreach($op as $order_product) {
-        try { 
-          $invoiceItem = \Stripe\InvoiceItem::create([
-            'customer' => $customer->id,
-            'unit_amount' => round($order_product['p_unit_price']*100),
-            'description' => 'Product ID -'. $order_product['p_id'],
-            'invoice' => $invoice->id,
-            'quantity' => $order_product['p_qty'],
-            'currency' => strtolower(CURRENCY)
-          ]);
-        } catch(Exception $e) { 
-          $error = $e->getMessage();
-          print_r($error);
-        }
-      }
-      echo "----";
-print_r($invoiceItem);
-      if (defined(TELE_CONFERENCE_AMOUNT)) {
 
-        // $invoiceItem = \Stripe\InvoiceItem::create([
-        //   'customer' => $customer->id,
-        //   'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
-        //   'description' => TELE_CONFERENCE_TITLE,
-        //   'invoice' => $invoice->id,
-        //   'quantity' => 1,
-        //   'currency' => strtolower(CURRENCY)
-        // ]);
-      }
+     // Finalize the invoice
+    $invoice->finalizeInvoice();      
     
       $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
