@@ -1,6 +1,6 @@
 <body>
     <div style="margin:0 auto;padding: 60px;font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, &quot;Noto Sans&quot;, Helvetica, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;;max-width: max-content;border-radius: 30px;min-height: 250px;display: flex;flex-direction: column;justify-content: center;background: #fff;box-shadow: 0 0 50px 0px rgb(81 85 106 / 30%);margin-top: 5%;">
-    <img src="loader.gif" width="300" height="200" style="
+    <img src="./loader.gif" width="300" height="200" style="
     margin: 0 auto;
 ">
         <h1 style="text-align:center;color: #0e64b3;margin-top:0">Generating Invoice</h1>
@@ -52,7 +52,7 @@ if(empty($get_customer['data'])) {
     )); 
   } catch(Exception $e) {   
     $error = $e->getMessage();
-    print_r($error);
+    //print_r($error);
   } 
 } else {
 
@@ -95,7 +95,7 @@ if ($customer) {
 
   } catch(Exception $e) { 
     $error = $e->getMessage();
-    print_r($error);
+    //print_r($error);
   } 
   
   // Create an Invoice Item with the Price, and Customer you want to charge
