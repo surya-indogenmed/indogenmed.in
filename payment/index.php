@@ -328,7 +328,7 @@
                                     
                                 </style>
 
-                                <link rel='stylesheet' href='../st/style.css' type='text/css' media='all' />
+                                <link rel='stylesheet' href='../st/style.css?v=1' type='text/css' media='all' />
                                 <div class="main-box_st">
 
                                 <?php  if ( AMOUNT > 0 ) { ?>
