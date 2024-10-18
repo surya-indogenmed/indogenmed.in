@@ -26,17 +26,17 @@ $conn->query($sql);
 
 $get_customer = "";
 
-try {
-  $get_customer = \Stripe\Customer::search([
-    'query' => 'email:\'' . EMAIL . '\''
-  ]);
-} catch(Exception $e) {   
-  $error = $e->getMessage();
-  print_r($error);
-} 
+// try {
+//   $get_customer = \Stripe\Customer::search([
+//     'query' => 'email:\'' . EMAIL . '\''
+//   ]);
+// } catch(Exception $e) {   
+//   $error = $e->getMessage();
+//   print_r($error);
+// } 
 
 // Add new customer fullname and email to stripe 
-if(empty($get_customer['data'])) {
+//if(empty($get_customer['data'])) {
   try {   
     $customer = \Stripe\Customer::create(array(  
         'name' => NAME,  
@@ -54,7 +54,7 @@ if(empty($get_customer['data'])) {
     $error = $e->getMessage();
     //print_r($error);
   } 
-} else {
+/*} else {
 
   $customer = $get_customer['data'][0];
  
@@ -66,7 +66,7 @@ if(empty($get_customer['data'])) {
        
   $conn->query($sql2);
 
-}
+}*/
 
 if ($customer) {
   // Create an Invoice
