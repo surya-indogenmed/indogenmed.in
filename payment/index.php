@@ -375,7 +375,7 @@
                                 
                                     </div>    
                                     <script src="https://js.stripe.com/v3/"></script>
-                                    <script src="../st/stripe-checkout.js" defer></script>
+                                    <script src="../st/stripe-checkout.js?v=1" defer></script>
                                     
                                 <?php   } ?>
 
