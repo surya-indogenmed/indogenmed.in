@@ -120,14 +120,14 @@ if ($customer) {
 
       if (defined(TELE_CONFERENCE_AMOUNT)) {
 
-        $invoiceItem = \Stripe\InvoiceItem::create([
-          'customer' => $customer->id,
-          'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
-          'description' => TELE_CONFERENCE_TITLE,
-          'invoice' => $invoice->id,
-          'quantity' => 1,
-          'currency' => strtolower(CURRENCY)
-        ]);
+        // $invoiceItem = \Stripe\InvoiceItem::create([
+        //   'customer' => $customer->id,
+        //   'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
+        //   'description' => TELE_CONFERENCE_TITLE,
+        //   'invoice' => $invoice->id,
+        //   'quantity' => 1,
+        //   'currency' => strtolower(CURRENCY)
+        // ]);
       }
     
       $conn2 = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
