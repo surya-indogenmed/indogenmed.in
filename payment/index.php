@@ -391,7 +391,7 @@
 
                             
                             <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment) || !$geo_country) { ?>
-<!--                             <label class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
+                            <label class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
                                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
@@ -401,7 +401,7 @@
                                 <div class="d-flex" style="align-items:center;">
                                    <img src="img/stripe.png" height="30" width="80" style="margin-left:1rem;">
                                 </div>
-                            </label> -->
+                            </label>
                             <?php } ?>
                             
                             <?php if(in_array($geo_country, $config_wise_countrywise_payment) || !$geo_country) { ?>
