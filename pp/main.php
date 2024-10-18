@@ -1,18 +1,11 @@
-<?php
+<?php require '../env.php';
 
 if (!isset($_GET['order_id']) && empty($_GET['order_id']) ) {
     echo "Invalid Request";
     exit;
 }
-require_once('config.php');
-
-$hostname = DB_HOST;
-$username = DB_USERNAME;
-$password = DB_PASSWORD;
-$db = DB_NAME;
-
 // Create connection
-$conn = new mysqli($servername, $username, $password, $db);
+$conn = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
 // Check connection
 if ($conn->connect_error) {
@@ -22,17 +15,19 @@ if ($conn->connect_error) {
 
 $order_id = base64_decode($_GET['order_id']);
 
-//$sql = "SELECT * FROM wp_woocommerce_order_items WHERE order_id = " . $_GET['order_id'];
-$sql = "SELECT * FROM wp_postmeta WHERE post_id = " . $order_id . " AND `meta_key` IN('_order_total','_billing_first_name', '_billing_last_name', '_billing_address_1', '_billing_city', '_billing_state', '_billing_postcode', '_billing_country', '_billing_email', '_billing_phone')";
+define('ENCODED_OID', $order_id);
+
+$sql = "SELECT * FROM oc_order WHERE order_id = " . $order_id;
+
 $result = $conn->query($sql);
 
 $product = array();
  
 if ($result->num_rows > 0) {
     
-    $sql = "UPDATE wp_postmeta SET `meta_value` = 'Paypal' WHERE `post_id` =" . $order_id ." AND `meta_key` = '_payment_method_title'";
+    $sql = "UPDATE oc_order SET `payment_method` = 'Paypal', `payment_code` = 'Paypal' WHERE `order_id` =" . $order_id;
+    
     $conn->query($sql);
-
 
     $order_total = 0;
     $firstname = "";
@@ -47,29 +42,24 @@ if ($result->num_rows > 0) {
     // output data of each row
     while($row = $result->fetch_assoc()) {
         
-        if ($row['meta_key'] == '_order_total') {
-            $order_total = $row['meta_value'];
-        } else if ($row['meta_key'] == '_billing_first_name') {
-            $billing_firstname = $row['meta_value'];
-        } else if ($row['meta_key'] == '_billing_last_name') {
-            $billing_lastname =  $row['meta_value'];
-        } else if ($row['meta_key'] == '_billing_address_1') {
-            $billing_address1 = $row['meta_value'];
-        } else if ($row['meta_key'] == '_billing_address_2') {
-            $billing_address2 = $row['meta_value'];
-        } else if ($row['meta_key'] == '_billing_city') {
-            $billing_city = $row['meta_value'];
-        }  else if ($row['meta_key'] == '_billing_postcode') {
-            $billing_zip = $row['meta_value'];
-        }  else if ($row['meta_key'] == '_billing_country') {
-            $billing_country = $row['meta_value'];
-        }  else if ($row['meta_key'] == '_billing_email') {
-            $billing_email = $row['meta_value'];
-        }  else if ($row['meta_key'] == '_billing_phone') {
-            $billing_phone = $row['meta_value'];
-        }
-    }
+        $total = $row['total'];
        
+        $currency_value = $row['currency_value'];
+
+        $order_total = round ($currency_value * $total);
+
+        $billing_firstname = $row['payment_firstname'];
+        $billing_lastname =  $row['payment_lastname'];
+        $billing_address1 = $row['payment_address_1'];
+        $billing_address2 = $row['payment_address_2'];
+        $billing_city = $row['payment_city'];
+        $billing_zip = $row['payment_postcode'];
+        $billing_country = $row['payment_country'];
+        $billing_email = $row['email'];
+        $billing_phone = $row['telephone'];
+        $state = $row['payment_zone'];
+        $order_currency = $row['currency_code'];
+    }
     $voucher = 'Order'.$order_id;
     $product = [ 
         'image' => '',
@@ -152,7 +142,6 @@ if ($result->num_rows > 0) {
 <script>
     setTimeout(function(){
        document.getElementById("pay").click(); 
-        
     }, 100);
      
 </script>

@@ -1,7 +1,4 @@
-<?php
-
-    require '../env.php';
-
+<?php require '../st/config.php';
     if (!isset($_GET['order_id']) && empty($_GET['order_id']) ) {
         echo "Invalid Request";
         exit;
@@ -23,8 +20,41 @@
     $result = $conn->query($sql);
     
     $product = array();
-     
+    
+    $setting_sql = "SELECT * FROM `oc_setting` WHERE `key` IN('config_stripe_countrywise_payment', 'config_stripe_paybyinvoice_countrywise_payment', 'config_banktransfer_countrywise_payment', 'config_paypal_countrywise_payment', 'config_wise_countrywise_payment')";
+    
+    $setting_result = $conn->query($setting_sql);
+
+    $config_stripe_countrywise_payment = array();
+    $config_stripe_paybyinvoice_countrywise_payment = array();
+    $config_banktransfer_countrywise_payment = array();
+    $config_paypal_countrywise_payment = array();
+    $config_wise_countrywise_payment = array();
+
+    if ($setting_result->num_rows > 0) {
+        // output data of each row
+        //print_r($setting_result->fetch_assoc());
+        while($setting_row = $setting_result->fetch_assoc()) {
+            if ($setting_row['key'] == 'config_stripe_countrywise_payment') {
+                $config_stripe_countrywise_payment = json_decode($setting_row['value'],1);
+            }
+            if($setting_row['key'] == 'config_stripe_paybyinvoice_countrywise_payment') {
+                $config_stripe_paybyinvoice_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_banktransfer_countrywise_payment'){
+                $config_banktransfer_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_paypal_countrywise_payment') {
+                $config_paypal_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+            if($setting_row['key'] == 'config_wise_countrywise_payment') {
+                $config_wise_countrywise_payment = json_decode($setting_row['value'], 1);
+            }
+        }
+    } 
+
     if ($result->num_rows > 0) {
+        $geo_country = "";
         $order_total = 0;
         $firstname = "";
         $lastname = "";
@@ -45,7 +75,8 @@
             $currency_total = $row['currency_value'];
 
             $order_total = round ($currency_total * $total);
-          
+            
+            $geo_country = $row['geo_country'];
             $billing_firstname = $row['payment_firstname'];
             $billing_lastname =  $row['payment_lastname'];
             $billing_address1 = $row['payment_address_1'];
@@ -59,7 +90,7 @@
             $order_currency = $row['currency_code'];
            
         }
-    }
+    
 ?>
 <html>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,8 +105,8 @@
         background: #fbfbfb;
     }
     .topbar{
-    	background-color: #262632;
-    	height: 60px;
+    	border-bottom: 1px solid lightgrey;
+    	height: 70px;
     } 
     
      .checkout{
@@ -102,7 +133,7 @@
         cursor:pointer;
     }
     .payment-list li.active {
-        border-color: #3680d3;
+        border: 2px solid #3680d3;
         background-color: #fbfdff;
     }
     .payment-option{
@@ -208,10 +239,7 @@
     .nav-tabs .nav-link {
         font-size:14px;
     }
-    .main-box1 a, .main-box1 a:hover { 
-        color:#fff;
-        
-    }
+    
     .main-box1{ 
         padding: 8px 10px;
     }
@@ -228,6 +256,9 @@
          }  
           .main-box{
     	padding: 2em;
+     }  
+     .main-box_st{
+    	padding: 0 2em;
      }  
     }
     .nav-tabs {
@@ -253,8 +284,11 @@
 	<body>
 		<div class="">
 			<div class="topbar">
-                <div class="main-box1">
-                    <a href="<?php echo MAIN_DOMAIN_LINK ?>index.php?route=checkout/cart" class="btn cancel">Back</a>
+                <div class="main-box1 d-flex justify-content-between align-items-center">
+                    <a href="<?php echo MAIN_DOMAIN_LINK; ?>" class="">
+                        <img src="https://indogenmed.gumlet.io/image/catalog/cat-icon/cropped-indogen-logo-4.webp?w=234">
+                    </a>
+                    <a href="<?php echo MAIN_DOMAIN_LINK; ?>index.php?route=checkout/cart" class="btn cancel">Back</a>
                 </div>
             </div>
             <div class="main-box">
@@ -265,30 +299,143 @@
 	                <div class="col-lg-8">
                     <div class="payment p-1"> Payment Options</div>
                         <div class="d-flex flex-column payment-option">
-                            <div class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe" onclick="stripe('<?php echo $decoded_order_id ?>')">
+
+                            <?php if(in_array($geo_country, $config_stripe_countrywise_payment) || !$geo_country) { ?>
+                            <div class="payment-list">
+                            <label class="" data-toggle="collapse" href="#collapse_stripe" role="button" aria-expanded="false" aria-controls="collapse_stripe">
+                                <div class=" d-flex justify-content-between  flex-column flex-lg-row" for="stripe_pg">
+                                    <div class="form-check">
+                                    
+                                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_pg">
+                                        <div class="title">  Credit/Debit Card</div>
+                                        <div class="sub-title">Secure transfer using your bank account</div>
+                                    </div>
+                                    <div class="d-flex">
+                                    <img src="img/cc.png">
+                                    </div>
+                                </div> 
+                            </label>
+                                <!--stripe-->
+                                <div id="collapse_stripe" class="collapse payment-list mt-3">
+                                <style>
+                                    .cancel {
+                                        border:1px solid lightgrey;
+                                        border-radius:10px;
+                                        padding: 10px 20px;
+                                        color: #000;
+                                        text-decoration: none;
+                                    }
+                                    
+                                </style>
+
+                                <link rel='stylesheet' href='../st/style.css?v=1' type='text/css' media='all' />
+                                <div class="main-box_st">
+
+                                <?php  if ( AMOUNT > 0 ) { ?>
+                                
+                                    <div>
+                                    
+                                    <!-- Display status message -->
+                                    <div id="stripe-payment-message" class="hidden"></div>
+                                    
+                                    
+                                    
+                                    <form id="stripe-payment-form" class="hidden">
+                                        <input type="text" id="oid" class="form-control hide" maxlength="50" required value="<?php echo OID; ?>" autofocus>
+                                        <input type='hidden' id='publishable_key' value='<?php echo STRIPE_PUBLISHABLE_KEY;?>'>
+                                        <input type="text" id="fullname" class="form-control hide" maxlength="50" required value="<?php echo NAME; ?>" autofocus>
+                                        <input type="email" id="email" class="form-control hide" maxlength="50" value="<?php echo EMAIL; ?>" required>
+                                        
+                                        <div id="loadingmsg" class="text-center" style="margin-bottom:20px"> Please wait ...</div>
+                                        <div id="heading" class="hide">
+                                            <h6 class="" >Enter Credit Card Information</h6>
+                                        </div>
+                                        <div id="stripe-payment-element">
+                                            <!--Stripe.js will inject the Payment Element here to get card details-->
+                                        </div>
+                                    
+                                        <button id="submit-button" class="btn btn-primary btn-block btn-lg hide mt-3">
+                                            <div class="spinner hidden" id="spinner"></div>
+                                            <span id="submit-text">Pay Now</span>
+                                        </button>
+                                    </form>
+
+                                    <!-- Display the payment processing -->
+                                    <div id="payment_processing" class="hidden text-center">
+                                        <span class="loader text-center" style="margin:0 auto"></span> Please wait! Your payment is processing...
+                                    </div>
+                                    
+                                    <!-- Display the payment reinitiate button -->
+                                    <div id="payment-reinitiate" class="hidden">
+                                        <button class="btn btn-primary" onclick="reinitiateStripe()">Reinitiate Payment</button>
+                                    </div>
+                                    
+                                    <br>
+                                    <div style="clear:both;"></div>
+                                
+                                    </div>    
+                                    <script src="https://js.stripe.com/v3/"></script>
+                                    <script src="../st/stripe-checkout.js?v=1" defer></script>
+                                    
+                                <?php   } ?>
+
+                                </div>  
+                
+                            </div>
+                            <!--stripe-->
+
+                            </div>
+                            
+                        <?php } ?>
+
+
+                            
+                            <?php if(in_array($geo_country, $config_stripe_paybyinvoice_countrywise_payment) || !$geo_country) { ?>
+                            <label class="payment-list d-flex justify-content-between  flex-column flex-lg-row" for="stripe_payment_link" onclick="stripe_payment_link('<?php echo $decoded_order_id ?>')">
                                 <div class="form-check">
                                    
-                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe">
-                                    <div class="title">  Credit/Debit Card</div>
-                                    <div class="sub-title">Secure transfer using your bank account</div>
+                                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="stripe_payment_link">
+                                    <div class="title"> Pay By Invoice</div>
+                                    <div class="sub-title">Secure transfer using payment link</div>
                                 </div>
-                                <div class="d-flex">
-                                   <img src="img/cc.png">
+                                <div class="d-flex" style="align-items:center;">
+                                   <img src="img/stripe.png" height="30" width="80" style="margin-left:1rem;">
                                 </div>
-                            </div>
-
-                        <!--    <div class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">-->
-                        <!--        <div class="form-check">-->
+                            </label>
+                            <?php } ?>
+                            
+                            <?php if(in_array($geo_country, $config_wise_countrywise_payment) || !$geo_country) { ?>
+                            <label class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="wise" onclick="wise('<?php echo $decoded_order_id ?>')">
+                               <div class="form-check">
                                 	
-                        <!--        	<input class="form-check-input" type="radio" name="flexRadioDefault" id="paypal">-->
-                        <!--        	 <div class="title">PayPal</div>-->
-                        <!--        	<div class="sub-title">Secure online payment through the PayPal portal</div>-->
-                        <!--        </div>-->
-                        <!--        <div>-->
-    	                   <!--        <img src="img/paypal.png">-->
-                    	   <!-- 	</div>-->
-                    	   <!--</div>-->
-
+                               	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="wise">
+                               	    <div class="title">Wise</div>
+                                	<div class="sub-title">Secure online payment through the Wise portal</div>
+                                </div>
+                                <div class="d-flex" style="align-items:center;">
+    	                            <img src="img/wise.svg" height="20" width="96" style="margin-left:1rem;">
+                    	   	    </div>
+                    	    </label>
+                            <?php } ?>
+                            
+                            <?php if(in_array($geo_country, $config_paypal_countrywise_payment) || !$geo_country) { ?>
+<!--                             <label class="payment-list d-flex justify-content-between flex-column flex-lg-row"  for="paypal" onclick="paypal('<?php echo $decoded_order_id ?>')">
+                               <div class="form-check">
+                                	
+                               	    <input class="form-check-input" type="radio" name="flexRadioDefault" id="paypal">
+                               	    <div class="title">PayPal</div>
+                                	<div class="sub-title">Secure online payment through the PayPal portal</div>
+                                </div>
+                                <div>
+    	                            <img src="img/paypal.png">
+                    	   	    </div>
+                    	    </label> -->
+                            <?php } ?>
+                            
+                            
+                            
+                            
+                            <?php if(in_array($geo_country, $config_banktransfer_countrywise_payment) || !$geo_country) { ?>
 	                        <label class="payment-list "  for="banktransfer" onclick="banktransfer('<?php echo $decoded_order_id ?>')">
 	                            
 	                            <div class="d-flex justify-content-between  flex-column flex-lg-row">
@@ -303,43 +450,46 @@
                                     </div>
                                 </div>
                                 <div style="display:none" class="bank_list">
+
                                 <ul>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse1" >
-                                            <img src="img/eur.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Euro</div> 
-                                                <span class="currency_desc">IBAN SWIFT/BIC</span>
-                                            </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse1" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home1" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile1" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                              <div class="tab-pane fade show active" id="nav-home1" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                  
-                                                  Account holder: <b>INDOGENMED</b><br/><br/>
-                                                  BIC: <b>TRWIBEB1XXX </b><br/><br/>
-                                                  IBAN: <b>BE92 9677 8016 7023 </b><br/><br/>
-                                                  Wise's address: <b> Rue du Trône 100, 3rd floor Brussels 1050 Belgium</b>
+                                    <?php if(in_array($geo_country, ['EUR'])) { ?>
+                                        <li class="eur">
+                                            <a class="icon d-flex" data-toggle="collapse" href="#collapse1" role="button" aria-expanded="false" aria-controls="collapse1" >
+                                                <img src="img/eur.svg">
+                                                <div class="icon_text">
+                                                    <div class="currency_name">Euro</div> 
+                                                    <span class="currency_desc">IBAN SWIFT/BIC</span>
+                                                </div>
+                                            </a>
+                                            <!--collapse-->
+                                            <div id="collapse1" class="collapse detail">
+                                                <nav>
+                                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home1" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile1" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                                </div>
+                                                </nav>
+                                                <div class="tab-content" id="nav-tabContent">
+                                                <div class="tab-pane fade show active" id="nav-home1" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                    
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    BIC: <b>TRWIBEB1XXX </b><br/><br/>
+                                                    IBAN: <b>BE92 9677 8016 7023 </b><br/><br/>
+                                                    Wise's address: <b> Rue du Trône 100, 3rd floor Brussels 1050 Belgium</b>
 
-                                            </div>
-                                            <div class="tab-pane fade" id="nav-profile1" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                                  Account holder: <b>INDOGENMED</b><br/><br/>
-                                                  SWIFT/BIC: <b>TRWIBEB1XXX </b><br/><br/>
-                                                  IBAN: <b>BE92 9677 8016 7023</b><br/><br/>
-                                                  Wise's address: <b> Rue du Trône 100, 3rd floor Brussels 1050 Belgium</b>
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile1" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    SWIFT/BIC: <b>TRWIBEB1XXX </b><br/><br/>
+                                                    IBAN: <b>BE92 9677 8016 7023</b><br/><br/>
+                                                    Wise's address: <b> Rue du Trône 100, 3rd floor Brussels 1050 Belgium</b>
 
-                                              </div>
+                                                </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
+                                            <!--collapse-->
+                                        </li>
+                                    <?php } else if(in_array($geo_country, ['GDP'])) { ?>
                                     <li> 
                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse2" role="button" aria-expanded="false" aria-controls="collapse2">
                                             <img src="img/gbp.svg">
@@ -378,7 +528,236 @@
                                         </div>
                                         <!--collapse-->
                                     </li>
+                                    
+                                    <?php } else if(in_array($geo_country, ['AUD'])) { ?>
                                     <li>
+                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse4" role="button" aria-expanded="false" aria-controls="collapse4">
+                                            <img src="img/aud.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">Australian dollar</div>
+                                                <span class="currency_desc">BSB code, Account number</span>
+                                            </div>
+                                        </a>
+                                        <!--collapse-->
+                                        <div id="collapse4" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home4" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile4" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home4" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                  
+                                                    Account holder:  <b>INDOGENMED</b><br/><br/>
+                                                    BSB code:  <b>802-985</b><br/><br/>
+                                                    Account number: 625908557</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile4" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                   Sorry, you can’t get account details to receive international AUD payments yet.
+    
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                    </li>
+                                    <?php } else if(in_array($geo_country, ['NZD'])) { ?>
+                                    <li>
+                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse5" role="button" aria-expanded="false" aria-controls="collapse5">
+                                            <img src="img/aud.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">New Zealand dollar</div>
+                                                <span class="currency_desc">Account number</span>
+                                             </div>
+                                        </a>
+                                        <!--collapse-->
+                                        <div id="collapse5" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home5" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile5" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home5" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                  
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    Account number:<b> 04-2021-0208416-71</b><br/><br/>
+                                                    Wise's address: <b>56 Shoreditch High Street
+                                                    London E1 6JJ
+                                                    United Kingdom</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile5" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                   Sorry, you can’t get account details to receive international NZD payments yet.
+    
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                    </li>
+                                    <?php } else if(in_array($geo_country, ['CAD'])) { ?>
+
+                                    <li>
+                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse6" role="button" aria-expanded="false" aria-controls="collapse6">
+                                            <img src="img/cad.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">Canadian dollar</div>
+                                                <span class="currency_desc">Institution number, Transit number, Account number</span>
+                                             </div>
+                                        </a>
+                                        <!--collapse-->
+                                        <div id="collapse6" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home6" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile6" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home6" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    Institution number:<b> 621</b><br/><br/>
+                                                    Account number: <b>200110863347</b><br/><br/>
+                                                    Transit number: <b>16001</b><br/><br/>
+                                                    Wise's address:<b> 99 Bank Street, Suite 1420
+                                                    Ottawa ON K1P 1H4
+                                                    Canada</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile6" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                    Account holder:  <b>INDOGENMED</b><br/><br/>
+                                                    SWIFT/BIC:  <b>TRWICAW1XXX</b><br/><br/>
+                                                    Account number: <b> 200110863347</b><br/><br/>
+                                                    Wise's address:  <b>99 Bank Street, Suite 1420
+                                                    Ottawa ON K1P 1H4
+                                                    Canada</b>
+                                                        
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                    </li>
+                                    <?php } else if(in_array($geo_country, ['HUF'])) { ?>
+
+                                    <li>
+                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse7" role="button" aria-expanded="false" aria-controls="collapse7">
+                                            <img src="img/huf.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">Hungarian forint</div>
+                                                <span class="currency_desc">Bank code, Account number</span>
+                                             </div>
+                                        </a>
+                                        <!--collapse-->
+                                        <div id="collapse7" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home7" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile7" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home7" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                  
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    Account number: <b>12600016-15895225-04077005</b><br/><br/>
+                                                    Wise's address: <b>Rue du Trône 100, 3rd floor
+                                                    Brussels
+                                                    1050
+                                                    Belgium</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile7" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                   Sorry, you can’t get account details to receive international HUF payments yet.
+                                                        
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                    </li>
+                                    <?php } else if(in_array($geo_country, ['SGD'])) { ?>
+                                    <li>
+                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse8" role="button" aria-expanded="false" aria-controls="collapse8">
+                                            <img src="img/sgd.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">Singapore dollar</div>
+                                                <span class="currency_desc">Bank name, Bank code, Account number</span>
+                                             </div>
+                                        </a>
+                                        <!--collapse-->
+                                        <div id="collapse8" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home8" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile8" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home8" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                    Payment network: <b>FAST</b><br/><br/>
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    Bank name: <b>Wise Asia-Pacific Pte. Ltd. (Formerly TransferWise)</b><br/><br/>
+                                                    Bank code: <b>0516</b><br/><br/>
+                                                    Account number: <b>110-019-71</b><br/><br/>
+                                                    Wise's address: <b>1 Paya Lebar Link #13-06 - #13-08 PLQ 2, Paya Lebar Quarter
+                                                    Singapore 408533</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile8" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                   Sorry, you can’t get account details to receive international SGD payments yet.
+                                                        
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                    </li>
+                                    <?php } else if(in_array($geo_country, ['SGD'])) { ?>
+
+                                    <li>
+                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse9" role="button" aria-expanded="false" aria-controls="collapse9">
+                                            <img src="img/sgd.svg">
+                                            <div class="icon_text">
+                                                <div class="currency_name">Singapore dollar</div>
+                                                <span class="currency_desc">Bank name, Bank code, Account number</span>
+                                             </div>
+                                        </a>
+                                          <!--collapse-->
+                                        <div id="collapse9" class="collapse detail">
+                                            <nav>
+                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home9" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile9" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
+                                              </div>
+                                            </nav>
+                                            <div class="tab-content" id="nav-tabContent">
+                                               <div class="tab-pane fade show active" id="nav-home9" role="tabpanel" aria-labelledby="nav-home-tab">
+                                                    Payment network:<b> GIRO, MEPS</b><br/><br/>
+                                                    Account holder: <b>INDOGENMED</b><br/><br/>
+                                                    Bank name: <b>DBS Bank Ltd</b><br/><br/>
+                                                    Bank code: <b>7171</b><br/><br/>
+                                                    Account number:<b> 885-074-253-648</b><br/><br/>
+                                                    Wise's address:<b> 1 Paya Lebar Link #13-06, PLQ 2, Paya Lebar Quarter
+                                                    Singapore 408533</b>
+
+                                                </div>
+                                                <div class="tab-pane fade" id="nav-profile9" role="tabpanel" aria-labelledby="nav-profile-tab">
+    
+                                                   Sorry, you can’t get account details to receive international SGD payments yet.
+                                                        
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <!--collapse-->
+                                            
+                                    </li>
+                                    <?php } else { ?>
+                                        <li>
                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse3" role="button" aria-expanded="false" aria-controls="collapse3">
                                             <img src="img/usd.svg">
                                             <div class="icon_text">
@@ -422,224 +801,8 @@
                                         </div>
                                         <!--collapse-->
                                     </li>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse4" role="button" aria-expanded="false" aria-controls="collapse4">
-                                            <img src="img/aud.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Australian dollar</div>
-                                                <span class="currency_desc">BSB code, Account number</span>
-                                            </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse4" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home4" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile4" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home4" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                  
-                                                    Account holder:  <b>INDOGENMED</b><br/><br/>
-                                                    BSB code:  <b>802-985</b><br/><br/>
-                                                    Account number: 625908557</b>
+                                    <?php } ?>
 
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile4" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                   Sorry, you can’t get account details to receive international AUD payments yet.
-    
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse5" role="button" aria-expanded="false" aria-controls="collapse5">
-                                            <img src="img/aud.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">New Zealand dollar</div>
-                                                <span class="currency_desc">Account number</span>
-                                             </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse5" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home5" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile5" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home5" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                  
-                                                    Account holder: <b>INDOGENMED</b><br/><br/>
-                                                    Account number:<b> 04-2021-0208416-71</b><br/><br/>
-                                                    Wise's address: <b>56 Shoreditch High Street
-                                                    London E1 6JJ
-                                                    United Kingdom</b>
-
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile5" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                   Sorry, you can’t get account details to receive international NZD payments yet.
-    
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse6" role="button" aria-expanded="false" aria-controls="collapse6">
-                                            <img src="img/cad.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Canadian dollar</div>
-                                                <span class="currency_desc">Institution number, Transit number, Account number</span>
-                                             </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse6" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home6" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile6" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home6" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    Account holder: <b>INDOGENMED</b><br/><br/>
-                                                    Institution number:<b> 621</b><br/><br/>
-                                                    Account number: <b>200110863347</b><br/><br/>
-                                                    Transit number: <b>16001</b><br/><br/>
-                                                    Wise's address:<b> 99 Bank Street, Suite 1420
-                                                    Ottawa ON K1P 1H4
-                                                    Canada</b>
-
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile6" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                    Account holder:  <b>INDOGENMED</b><br/><br/>
-                                                    SWIFT/BIC:  <b>TRWICAW1XXX</b><br/><br/>
-                                                    Account number: <b> 200110863347</b><br/><br/>
-                                                    Wise's address:  <b>99 Bank Street, Suite 1420
-                                                    Ottawa ON K1P 1H4
-                                                    Canada</b>
-                                                        
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
-                                    <li>
-                                         <a class="icon d-flex" data-toggle="collapse" href="#collapse7" role="button" aria-expanded="false" aria-controls="collapse7">
-                                            <img src="img/huf.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Hungarian forint</div>
-                                                <span class="currency_desc">Bank code, Account number</span>
-                                             </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse7" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home7" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile7" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home7" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                  
-                                                    Account holder: <b>INDOGENMED</b><br/><br/>
-                                                    Account number: <b>12600016-15895225-04077005</b><br/><br/>
-                                                    Wise's address: <b>Rue du Trône 100, 3rd floor
-                                                    Brussels
-                                                    1050
-                                                    Belgium</b>
-
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile7" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                   Sorry, you can’t get account details to receive international HUF payments yet.
-                                                        
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse8" role="button" aria-expanded="false" aria-controls="collapse8">
-                                            <img src="img/sgd.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Singapore dollar</div>
-                                                <span class="currency_desc">Bank name, Bank code, Account number</span>
-                                             </div>
-                                        </a>
-                                        <!--collapse-->
-                                        <div id="collapse8" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home8" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile8" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home8" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    Payment network: <b>FAST</b><br/><br/>
-                                                    Account holder: <b>INDOGENMED</b><br/><br/>
-                                                    Bank name: <b>Wise Asia-Pacific Pte. Ltd. (Formerly TransferWise)</b><br/><br/>
-                                                    Bank code: <b>0516</b><br/><br/>
-                                                    Account number: <b>110-019-71</b><br/><br/>
-                                                    Wise's address: <b>1 Paya Lebar Link #13-06 - #13-08 PLQ 2, Paya Lebar Quarter
-                                                    Singapore 408533</b>
-
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile8" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                   Sorry, you can’t get account details to receive international SGD payments yet.
-                                                        
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                    </li>
-                                    <li>
-                                        <a class="icon d-flex" data-toggle="collapse" href="#collapse9" role="button" aria-expanded="false" aria-controls="collapse9">
-                                            <img src="img/sgd.svg">
-                                            <div class="icon_text">
-                                                <div class="currency_name">Singapore dollar</div>
-                                                <span class="currency_desc">Bank name, Bank code, Account number</span>
-                                             </div>
-                                        </a>
-                                          <!--collapse-->
-                                        <div id="collapse9" class="collapse detail">
-                                            <nav>
-                                              <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home9" role="tab" aria-controls="nav-home" aria-selected="true">Local</a>
-                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile9" role="tab" aria-controls="nav-profile" aria-selected="false">Global SWIFT</a>
-                                              </div>
-                                            </nav>
-                                            <div class="tab-content" id="nav-tabContent">
-                                               <div class="tab-pane fade show active" id="nav-home9" role="tabpanel" aria-labelledby="nav-home-tab">
-                                                    Payment network:<b> GIRO, MEPS</b><br/><br/>
-                                                    Account holder: <b>INDOGENMED</b><br/><br/>
-                                                    Bank name: <b>DBS Bank Ltd</b><br/><br/>
-                                                    Bank code: <b>7171</b><br/><br/>
-                                                    Account number:<b> 885-074-253-648</b><br/><br/>
-                                                    Wise's address:<b> 1 Paya Lebar Link #13-06, PLQ 2, Paya Lebar Quarter
-                                                    Singapore 408533</b>
-
-                                                </div>
-                                                <div class="tab-pane fade" id="nav-profile9" role="tabpanel" aria-labelledby="nav-profile-tab">
-    
-                                                   Sorry, you can’t get account details to receive international SGD payments yet.
-                                                        
-                                                  </div>
-                                            </div>
-                                        </div>
-                                        <!--collapse-->
-                                            
-                                    </li>
                                     
                                 </ul>
                                 <form>
@@ -656,6 +819,7 @@
                                
                                 </div>
                             </label>
+                            <?php } ?>
                         </div>
                         
                         </div>
@@ -704,32 +868,45 @@
             </div>
             <script>
                 var domain_link = '<?php echo DOMAIN_LINK ?>';
-            
+                
+                // Set active class to select banks in bank transfer method 
+               
+                $('#stripe_pg').trigger('click');
+
                 // Set active class to select banks in bank transfer method 
                 $(document).on("shown.bs.collapse", function(e) {
-                    $(".collapse").not(e.target).collapse('hide');
+                    $('.bank_list li').removeClass('active');
+                    $(".bank_list .collapse").not(e.target).collapse('hide');
                     var panel = $(e.target).parent("li");
-                    panel.addClass("active")
-                })
+                    panel.addClass("active");
+                    if( $('.bank_list li.active').length  == 0 ) {
+                        $('.bank_list li:first-child').addClass('active');
+
+                    }
+                   
+                });
+                
                 // Remove active class from bank on collapse
-                $(document).on("hidden.bs.collapse", function(e) {
-                    $(e.target).parent('li').removeClass('active');
-                })
+                
                 
                 function paypal(orderid) {
                     
                     window.location = domain_link + "pp/main.php?order_id="+orderid;
                 }
-                function stripe(orderid) {
-                    
-                    window.location =  domain_link + "st/main.php?order_id="+orderid;
+                function wise(orderid) {
+                        
+                    window.location = domain_link + "wise/main.php?order_id="+orderid;
+                }
+
+                function stripe_payment_link(orderid) {
+                        
+                    window.location =  domain_link + "st/invoice.php?order_id="+orderid;
                 }
                 function banktransfer(orderid) {
                     $('.bank_list').show();
                 }
                 $( document ).ready(function() {
-
-
+                            
                             $('#save_bank_transfer').click(function() {
                                 var ord_id = $('#order__id').val();
                                 var bank_data = $("ul li.active .detail .tab-pane").html();
@@ -754,3 +931,24 @@
             </script>
         </body>
 </html>
+<?php } else { ?>
+    <div>Invalid Request !!</div>
+<?php } ?>
+
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/667a7e0f9d7f358570d32194/1i177os16';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+<p class="text-center">
+          © Copyright 2024-25. Indogenmed Healthcare © 2022
+
+          
+</p>

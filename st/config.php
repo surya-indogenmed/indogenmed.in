@@ -1,4 +1,4 @@
-<?php
+<?php session_start();
 
 require '../env.php';
 
@@ -22,11 +22,15 @@ if ($conn->connect_error) {
 
 $order_id = base64_decode($_GET['order_id']);
 
-define('ENCODED_OID', $order_id);
+define('DECODED_OID', $order_id);
 
 $sql = "SELECT * FROM oc_order WHERE order_id = " . $order_id;
 
 $result = $conn->query($sql);
+
+$shipping_sql = "SELECT * FROM oc_order_total WHERE order_id = " . $order_id;
+
+$shipping_result = $conn->query($shipping_sql);
 
 $product = array();
  
@@ -96,8 +100,40 @@ if ($result->num_rows > 0) {
     define('CURRENCY', $order_currency);
     define('EMAIL', $billing_email);
     
+    $sql1 = "SELECT * FROM oc_order_product WHERE order_id = " . $order_id;
+    $result1 = $conn->query($sql1);
+    $op = array();
 
+    if ($result1->num_rows > 0) {
+        
+      while($row1 = $result1->fetch_assoc()) {
+        
+        $op[] = [
+          'p_id' => $row1['product_id'],
+          'p_name' => $row1['name'],
+          'p_qty' => $row1['quantity'],
+          'p_unit_price' => round($row1['price']),
+          'p_price' => round($row1['total'])
+        ];
+
+      }
+    }
+    define('ORDER_PRODUCT', $op);
+
+    if ($shipping_result->num_rows > 0) {
+        
+      while($shipping_row = $shipping_result->fetch_assoc()) {
+        if ($shipping_row['code'] == 'shipping') {
+          define('SHIPPING_AMOUNT', $shipping_row['value']);
+          define('SHIPPING_TITLE', $shipping_row['title']);
+        }
+        if ($shipping_row['code'] == 'teleconference') {
+          define('TELE_CONFERENCE_AMOUNT', $shipping_row['value']);
+          define('TELE_CONFERENCE_TITLE', $shipping_row['title']);
+        }
+      }
+    }
+  
 } else {
   echo "Please try again!!!";
 }
-

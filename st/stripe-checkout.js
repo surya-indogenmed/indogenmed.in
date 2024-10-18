@@ -59,7 +59,7 @@ paymentForm.addEventListener("submit", handlePaymentSubmit);
 // Fetch a payment intent and capture the client secret
 let payment_intent_id;
 async function initialize() {
-    const { paymentIntentId, clientSecret } = await fetch("create_payment_intent.php?order_id="+oid, {
+    const { paymentIntentId, clientSecret } = await fetch("../st/create_payment_intent.php?order_id="+oid, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
     }).then((r) => r.json());
@@ -100,7 +100,7 @@ async function handlePaymentSubmit(e) {
     let fullname = document.getElementById("fullname").value;
     let email = document.getElementById("email").value;
     
-    const { customer_id } = await fetch("create_customer.php?order_id="+oid, {
+    const { customer_id } = await fetch("../st/create_customer.php?order_id="+oid, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ payment_intent_id: payment_intent_id, fullname: fullname, email: email }),
@@ -153,7 +153,7 @@ async function checkStatus() {
             case "succeeded":
                 // Post the transaction data to the server-side script
                 // and redirect to the payment status page
-                fetch("payment_insert.php?order_id="+oid, {
+                fetch("../st/payment_insert.php?order_id="+oid, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ payment_intent: paymentIntent, customer_id: customer_id }),
@@ -162,7 +162,7 @@ async function checkStatus() {
                 .then(data => {
                     if (data.transaction_id) {
                        //  showMessage(data.transaction_id);
-                        window.location.href = 'status.php?tid='+data.transaction_id+"&order_id="+oid;
+                        window.location.href = '../st/status.php?tid='+data.transaction_id+"&order_id="+oid;
                     } else {
                         showMessage(data.error);
                         paymentReinitiate();
