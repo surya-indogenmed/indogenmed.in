@@ -8,7 +8,7 @@ try {
     // Create PaymentIntent with amount, currency and description
     $paymentIntent = \Stripe\PaymentIntent::create([ 
         'amount' => $product_price,
-        'currency' => strtolower(CURRENCY), 
+        'currency' => 'eur', 
         'description' => DESCRIPTION, 
         'shipping' => [
             'address' => [
