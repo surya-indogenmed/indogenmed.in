@@ -69,6 +69,9 @@ $get_customer = "";
 }*/
 //print_r($customer);
 if ($customer) {
+
+    echo CURRENCY;
+    die;
     // Create an Invoice Item with the Price, and Customer you want to charge
 
       $op = ORDER_PRODUCT;
