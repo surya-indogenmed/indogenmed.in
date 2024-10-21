@@ -74,7 +74,7 @@
             $total = $row['total'];
             $currency_total = $row['currency_value'];
 
-            $order_total = round ($currency_total * $total);
+            $order_total = round ($currency_total * $total, 2);
             
             $geo_country = $row['geo_country'];
             $billing_firstname = $row['payment_firstname'];
