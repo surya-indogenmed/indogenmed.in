@@ -77,7 +77,7 @@ if ($customer) {
         try { 
           $invoiceItem = \Stripe\InvoiceItem::create([
             'customer' => $customer->id,
-            'unit_amount' => round($order_product['p_unit_price']*100),
+            'unit_amount' => round($order_product['p_unit_price']*100, 2),
             'description' => 'Product ID -'. $order_product['p_id'],
             //'invoice' => $invoice->id,
             'quantity' => $order_product['p_qty'],
@@ -94,7 +94,7 @@ if ($customer) {
 
         $invoiceItem = \Stripe\InvoiceItem::create([
           'customer' => $customer->id,
-          'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100),
+          'unit_amount' => round(TELE_CONFERENCE_AMOUNT*100, 2),
           'description' => TELE_CONFERENCE_TITLE,
           'invoice' => $invoice->id,
           'quantity' => 1,
@@ -115,7 +115,7 @@ if ($customer) {
         'shipping_rate_data' => [
           'display_name' => SHIPPING_TITLE,
           'fixed_amount' => [
-            'amount' => round(SHIPPING_AMOUNT*100),
+            'amount' => round(SHIPPING_AMOUNT*100, 2),
             'currency' => strtolower(CURRENCY)
           ],
           'tax_behavior' => 'inclusive',
