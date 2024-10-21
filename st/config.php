@@ -124,11 +124,11 @@ if ($result->num_rows > 0) {
         
       while($shipping_row = $shipping_result->fetch_assoc()) {
         if ($shipping_row['code'] == 'shipping') {
-          define('SHIPPING_AMOUNT', $shipping_row['value']);
+          define('SHIPPING_AMOUNT', round($currency_value * $shipping_row['value'], 2));
           define('SHIPPING_TITLE', $shipping_row['title']);
         }
         if ($shipping_row['code'] == 'teleconference') {
-          define('TELE_CONFERENCE_AMOUNT', $shipping_row['value']);
+          define('TELE_CONFERENCE_AMOUNT', round($currency_value * $shipping_row['value'], 2));
           define('TELE_CONFERENCE_TITLE', $shipping_row['title']);
         }
       }
