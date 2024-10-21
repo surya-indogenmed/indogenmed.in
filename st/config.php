@@ -112,8 +112,8 @@ if ($result->num_rows > 0) {
           'p_id' => $row1['product_id'],
           'p_name' => $row1['name'],
           'p_qty' => $row1['quantity'],
-          'p_unit_price' => round($row1['price']),
-          'p_price' => round($row1['total'])
+          'p_unit_price' => round($currency_value * $row1['price'], 2),
+          'p_price' => round($currency_value * $row1['total'], 2)
         ];
 
       }
