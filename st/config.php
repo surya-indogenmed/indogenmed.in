@@ -41,64 +41,64 @@ if ($result->num_rows > 0) {
     $conn->query($sql);
 
 
-    $order_total = 0;
-    $firstname = "";
-    $lastname = "";
-    $address1 = "";
-    $address2 = "";
-    $city = "";
-    $zip = "";
-    $country = "";
-    $email = "";
-    $billing_phone = ''; 
-    $state = ''; 
-    $order_currency ='';
+    $order_total_st = 0;
+    $firstname_st = "";
+    $lastname_st = "";
+    $address1_st = "";
+    $address2_st = "";
+    $city_st = "";
+    $zip_st = "";
+    $country_st = "";
+    $email_st = "";
+    $billing_phone_st = ''; 
+    $state_st = ''; 
+    $order_currency_st ='';
     
     // output data of each row
-    while($row = $result->fetch_assoc()) {
-        print_r($row);
-        $total = $row['total'];
+    while($rows = $result->fetch_assoc()) {
+        print_r($rows);
+        $total = $rows['total'];
        
-        $currency_value = $row['currency_value'];
+        $currency_value = $rows['currency_value'];
 
-        $order_total = round ($currency_value * $total);
+        $order_total_st = round ($currency_value * $total);
 
-        $billing_firstname = $row['payment_firstname'];
-        $billing_lastname =  $row['payment_lastname'];
-        $billing_address1 = $row['payment_address_1'];
-        $billing_address2 = $row['payment_address_2'];
-        $billing_city = $row['payment_city'];
-        $billing_zip = $row['payment_postcode'];
-        $billing_country = $row['payment_country'];
-        $billing_email = $row['email'];
-        $billing_phone = $row['telephone'];
-        $state = $row['payment_zone'];
-       echo $order_currency = $row['currency_code'];
+        $billing_firstname_st = $rows['payment_firstname'];
+        $billing_lastname_st =  $rows['payment_lastname'];
+        $billing_address1_st = $rows['payment_address_1'];
+        $billing_address2_st = $rows['payment_address_2'];
+        $billing_city_st = $rows['payment_city'];
+        $billing_zip_st = $rows['payment_postcode'];
+        $billing_country_st = $rows['payment_country'];
+        $billing_email_st = $rows['email'];
+        $billing_phone_st = $rows['telephone'];
+        $state_st = $rows['payment_zone'];
+       echo $order_currency_st = $rows['currency_code'];
     }
        
     $voucher = 'Order'.$order_id;
     $product = [ 
         'image' => '',
         'name' => $voucher,
-        'price' => $order_total,
+        'price' => $order_total_st,
         'code' => $voucher,
         'name' => $voucher,
-        'amount' => $order_total
+        'amount' => $order_total_st
     ];
     
-    define('AMOUNT', $order_total);
+    define('AMOUNT', $order_total_st);
     define('DESCRIPTION', $voucher);
     
-    define('NAME', $billing_firstname);
-    define('PHONE', $billing_phone);
-    define('ADDRESS1', $billing_address1);
-    define('ADDRESS2', $billing_address2);
-    define('CITY', $billing_city);
-    define('STATE', $state);
-    define('COUNTRY', $billing_country);
-    define('POSTAL_CODE', $billing_zip);
-    define('CURRENCY', $order_currency);
-    define('EMAIL', $billing_email);
+    define('NAME', $billing_firstname_st);
+    define('PHONE', $billing_phone_st);
+    define('ADDRESS1', $billing_address1_st);
+    define('ADDRESS2', $billing_address2_st);
+    define('CITY', $billing_city_st);
+    define('STATE', $state_st);
+    define('COUNTRY', $billing_country_st);
+    define('POSTAL_CODE', $billing_zip_st);
+    define('CURRENCY', $order_currency_st);
+    define('EMAIL', $billing_email_st);
     echo CURRENCY;
     $sql1 = "SELECT * FROM oc_order_product WHERE order_id = " . $order_id;
     $result1 = $conn->query($sql1);
