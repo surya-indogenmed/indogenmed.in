@@ -56,7 +56,7 @@ if ($result->num_rows > 0) {
     
     // output data of each row
     while($rows = $result->fetch_assoc()) {
-        print_r($rows);
+       
         $total = $rows['total'];
        
         $currency_value = $rows['currency_value'];
@@ -73,7 +73,7 @@ if ($result->num_rows > 0) {
         $billing_email_st = $rows['email'];
         $billing_phone_st = $rows['telephone'];
         $state_st = $rows['payment_zone'];
-       echo $order_currency_st = $rows['currency_code'];
+        $order_currency_st = $rows['currency_code'];
     }
        
     $voucher = 'Order'.$order_id;
@@ -99,7 +99,7 @@ if ($result->num_rows > 0) {
     define('POSTAL_CODE', $billing_zip_st);
     define('CURRENCY', $order_currency_st);
     define('EMAIL', $billing_email_st);
-    echo CURRENCY;
+   
     $sql1 = "SELECT * FROM oc_order_product WHERE order_id = " . $order_id;
     $result1 = $conn->query($sql1);
     $op = array();
