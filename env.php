@@ -17,7 +17,6 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
     define('RETURN_URL', 'http://indogen.in/pp/return.php'); 
     define('CANCEL_URL', 'http://indogen.in/pp/cancel.php'); 
     define('NOTIFY_URL', 'http://indogen.in/pp/notify.php'); 
-    define('CURRENCY', 'USD'); 
     define('SANDBOX', FALSE); // TRUE or FALSE 
     define('LOCAL_CERTIFICATE', FALSE); // TRUE or FALSE
 
@@ -49,7 +48,6 @@ if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') {
     define('RETURN_URL', 'https://test.indogenmed.in/pp/return.php'); 
     define('CANCEL_URL', 'https://test.indogenmed.in/pp/cancel.php'); 
     define('NOTIFY_URL', 'https://test.indogenmed.in/pp/notify.php'); 
-    define('CURRENCY', 'USD'); 
     define('SANDBOX', FALSE); // TRUE or FALSE 
     define('LOCAL_CERTIFICATE', FALSE); // TRUE or FALSE
 
